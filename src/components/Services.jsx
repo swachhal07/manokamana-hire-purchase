@@ -1,50 +1,67 @@
 import { useState, useRef, useLayoutEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, ArrowUpRight, ChevronUp } from 'lucide-react'
+import { ArrowRight, ChevronUp, Plus } from 'lucide-react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
-import img1 from '../assets/images/vitaly-gariev-0kWem6X0Mc8-unsplash.jpg'
-import img2 from '../assets/images/vitaly-gariev-LS5dCL0NkhE-unsplash.jpg'
-import img3 from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.jpg'
-import img4 from '../assets/images/photo-1628348068343-c6a848d2b6dd.avif'
+import imgPassenger from '../assets/images/photo-1612057473166-af2affdb92ad.avif'
+import imgTwoWheeler from '../assets/images/wp4366488.jpg'
+import imgCommercial from '../assets/images/tata-commercial-vehicles-rfk9d2h0ouvp4u8e.jpg'
+import imgAgriculture from '../assets/images/photo-1594771804886-a933bb2d609b.avif'
+import imgConstruction from '../assets/images/wp7435406.jpg'
+import imgIndustrial from '../assets/images/photo-1647427060118-4911c9821b82.avif'
+import imgBusiness from '../assets/images/premium_photo-1681487178876-a1156952ec60.avif'
 
 const offers = [
   {
-    name: 'Vehicle Finance',
+    name: 'Passenger Vehicles',
     heading: 'Drive home your dream car',
     desc: 'Own a new or used car, SUV, or electric vehicle with quick approvals and flexible terms.',
     items: ['New cars', 'Used cars', 'SUVs', 'Electric vehicles'],
-    image: img1,
+    image: imgPassenger,
   },
   {
-    name: 'Two-Wheeler Finance',
+    name: 'Two-Wheelers',
     heading: 'Ride now, pay with ease',
     desc: 'Finance motorcycles, scooters, and electric two-wheelers with affordable installments.',
     items: ['Motorcycles', 'Scooters', 'Electric bikes'],
-    image: img2,
+    image: imgTwoWheeler,
   },
   {
-    name: 'Commercial Vehicle Finance',
+    name: 'Commercial Vehicles',
     heading: 'From roads to revenues',
     desc: 'Accelerate your business with financing for pickup trucks, vans, mini trucks and buses.',
     items: ['Pickup trucks', 'Vans', 'Mini trucks', 'Buses', 'Heavy commercial'],
-    image: img3,
+    image: imgCommercial,
   },
   {
     name: 'Agricultural Equipment',
     heading: 'Grow more, harvest better',
     desc: 'Finance tractors and farming equipment to boost your agricultural productivity.',
     items: ['Tractors', 'Farming equipment'],
-    image: img4,
+    image: imgAgriculture,
   },
   {
     name: 'Construction Equipment',
     heading: 'Build bigger, reach higher',
     desc: 'Fund excavators, heavy machinery, and construction equipment to power your projects.',
     items: ['Excavators', 'Heavy machinery', 'Construction equipment'],
-    image: img1,
+    image: imgConstruction,
+  },
+  {
+    name: 'Industrial Machinery',
+    heading: 'Power your production line',
+    desc: 'Finance factory machinery, generators, and processing equipment to scale up output.',
+    items: ['Factory machinery', 'Generators', 'Processing units'],
+    image: imgIndustrial,
+  },
+  {
+    name: 'Business Equipment',
+    heading: 'Equip your enterprise',
+    desc: 'Fund the tools, systems, and equipment your growing business needs to keep moving.',
+    items: ['Office equipment', 'IT systems', 'Fit-out & tools'],
+    image: imgBusiness,
   },
 ]
 
@@ -54,18 +71,22 @@ const grain =
 const pad = (n) => String(n + 1).padStart(2, '0')
 
 export default function Services() {
-  const [active, setActive] = useState(2)
-  const current = offers[active]
+  const [active, setActive] = useState(0)
   const contentRef = useRef(null)
+  // Hover-to-expand only on devices that actually hover (desktop)
+  const canHover = useRef(
+    typeof window !== 'undefined' &&
+      window.matchMedia('(hover: hover) and (pointer: fine)').matches,
+  )
 
-  // Reveal only the content (not the grain/blend layers) to keep it smooth
+  // Reveal only the content (not the grain layer) to keep scrolling smooth
   useLayoutEffect(() => {
     const el = contentRef.current
     if (!el) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const ctx = gsap.context(() => {
-      // Transform-only (no opacity) so the large image + grain never repaint
+      // Transform-only (no opacity) so the large images + grain never repaint
       gsap.set(el, { willChange: 'transform' })
       gsap.from(el, {
         y: 40,
@@ -87,15 +108,6 @@ export default function Services() {
         className="pointer-events-none absolute inset-0 opacity-[0.055]"
         style={{ backgroundImage: grain }}
       />
-      {/* Faint column guides */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-40"
-        style={{
-          backgroundImage:
-            'linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px)',
-          backgroundSize: '25% 100%',
-        }}
-      />
 
       <div ref={contentRef} className="relative mx-auto max-w-7xl px-6 lg:px-10">
         {/* Header */}
@@ -111,120 +123,149 @@ export default function Services() {
               by category.
             </h2>
           </div>
-          <span className="hidden font-display text-sm tracking-widest text-white/40 md:block">
-            {pad(offers.length - 1)} — SERVICES
-          </span>
+          <div className="hidden text-right md:block">
+            <span className="font-display text-sm tracking-widest text-white/40">
+              {pad(offers.length - 1)} — SERVICES
+            </span>
+            <p className="mt-2 text-xs uppercase tracking-[0.2em] text-white/30">
+              Hover a panel to explore
+            </p>
+          </div>
         </div>
 
-        {/* Split */}
-        <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:gap-16">
-          {/* Index rail */}
-          <div>
-            <ul>
-              {offers.map((offer, i) => {
-                const isActive = i === active
-                return (
-                  <li key={offer.name}>
-                    <button
-                      onClick={() => setActive(i)}
-                      className={`group flex w-full items-center gap-5 border-t border-white/10 py-5 text-left transition-all ${
-                        isActive ? 'pl-4' : 'pl-0 hover:pl-2'
-                      }`}
-                    >
-                      <span
-                        className={`font-display text-sm tabular-nums transition-colors ${
-                          isActive ? 'text-brand-500' : 'text-white/40'
-                        }`}
-                      >
-                        {pad(i)}
-                      </span>
-                      <span
-                        className={`font-display text-2xl font-bold tracking-tight transition-colors ${
-                          isActive ? 'text-white' : 'text-white/45 group-hover:text-white/80'
-                        }`}
-                      >
-                        {offer.name}
-                      </span>
-                      <ArrowUpRight
-                        className={`ml-auto h-5 w-5 shrink-0 transition-all ${
-                          isActive
-                            ? 'text-brand-500 opacity-100'
-                            : 'text-white/40 opacity-0 group-hover:opacity-100'
-                        }`}
-                      />
-                    </button>
-                  </li>
-                )
-              })}
-              <li className="border-t border-white/10" />
-            </ul>
-
-            {/* Active detail */}
-            <div key={`detail-${active}`} className="animate-fade-up mt-8">
-              <p className="max-w-md leading-relaxed text-white/60">{current.desc}</p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {current.items.map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-full border border-white/15 px-3 py-1 text-xs font-medium text-white/70"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
-              <Link
-                to="/contact"
-                className="group mt-8 inline-flex items-center gap-3 rounded-full bg-brand-500 py-3.5 pl-7 pr-3.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
+        {/* Expanding panels */}
+        <div className="mt-12 flex flex-col gap-2.5 lg:h-[600px] lg:flex-row">
+          {offers.map((offer, i) => {
+            const isActive = i === active
+            return (
+              <article
+                key={offer.name}
+                role="button"
+                tabIndex={0}
+                aria-expanded={isActive}
+                aria-label={offer.name}
+                onClick={() => setActive(i)}
+                onFocus={() => setActive(i)}
+                onMouseEnter={() => canHover.current && setActive(i)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    setActive(i)
+                  }
+                }}
+                style={{ flexGrow: isActive ? 8 : 1 }}
+                className={`group relative cursor-pointer overflow-hidden rounded-2xl outline-none ring-brand-500/70 transition-all duration-700 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] focus-visible:ring-2 lg:basis-0 ${
+                  isActive ? 'h-[30rem] sm:h-[32rem]' : 'h-[4.25rem]'
+                } lg:h-auto lg:min-w-[4.5rem]`}
               >
-                Apply Now
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-brand-500 transition-transform duration-300 group-hover:translate-x-1">
-                  <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
-                </span>
-              </Link>
-            </div>
-          </div>
+                {/* Image */}
+                <img
+                  src={offer.image}
+                  alt=""
+                  className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ${
+                    isActive
+                      ? 'scale-100 opacity-100 grayscale-0'
+                      : 'scale-105 opacity-30 grayscale group-hover:opacity-45'
+                  }`}
+                />
+                {/* Wash: readable navy gradient when active, flat tint when collapsed */}
+                <div
+                  className={`absolute inset-0 transition-opacity duration-700 ${
+                    isActive
+                      ? 'bg-gradient-to-t from-black/75 via-black/20 to-transparent opacity-100'
+                      : 'bg-navy-900/55 opacity-100'
+                  }`}
+                />
+                {/* Red spine on the active panel */}
+                <div
+                  className={`absolute left-0 top-0 h-full w-1 bg-brand-500 transition-transform duration-500 ${
+                    isActive ? 'scale-y-100' : 'scale-y-0'
+                  }`}
+                  style={{ transformOrigin: 'top' }}
+                />
 
-          {/* Image panel */}
-          <div className="relative">
-            <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10">
-              <img
-                key={`img-${active}`}
-                src={current.image}
-                alt={current.name}
-                className="animate-fade-up h-[420px] w-full object-cover lg:h-[560px]"
-              />
-              {/* Gradient wash */}
-              <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-navy-900/20 to-transparent" />
-              {/* Caption */}
-              <div key={`cap-${active}`} className="animate-fade-up absolute inset-x-0 bottom-0 p-8 lg:p-10">
-                <div className="h-1 w-12 bg-brand-500" />
-                <p className="mt-4 text-xs font-bold uppercase tracking-[0.2em] text-white/60">
-                  {current.name}
-                </p>
-                <h3 className="mt-2 max-w-md font-display text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl">
-                  {current.heading}
-                </h3>
-              </div>
-            </div>
-
-            {/* Progress bar */}
-            <div className="mt-5 flex gap-2">
-              {offers.map((_, i) => (
-                <button
-                  key={i}
-                  aria-label={`Show ${offers[i].name}`}
-                  onClick={() => setActive(i)}
-                  className="group h-1 flex-1 overflow-hidden rounded-full bg-white/15"
+                {/* Collapsed label — horizontal on mobile, vertical on desktop */}
+                <div
+                  className={`absolute inset-0 transition-opacity duration-300 ${
+                    isActive ? 'pointer-events-none opacity-0' : 'opacity-100 delay-200'
+                  }`}
                 >
-                  <span
-                    className={`block h-full rounded-full bg-brand-500 transition-all duration-500 ${
-                      i === active ? 'w-full' : 'w-0 group-hover:w-1/3'
-                    }`}
-                  />
-                </button>
-              ))}
-            </div>
-          </div>
+                  {/* Mobile row */}
+                  <div className="flex h-full items-center gap-4 px-5 lg:hidden">
+                    <span className="font-display text-sm tabular-nums text-brand-500">
+                      {pad(i)}
+                    </span>
+                    <span className="font-display text-lg font-bold tracking-tight text-white/85">
+                      {offer.name}
+                    </span>
+                    <Plus className="ml-auto h-4 w-4 text-white/50" />
+                  </div>
+                  {/* Desktop vertical slat */}
+                  <div className="hidden h-full flex-col items-center justify-between py-6 lg:flex">
+                    <span className="font-display text-sm tabular-nums text-brand-500">
+                      {pad(i)}
+                    </span>
+                    <span
+                      className="whitespace-nowrap font-display text-xl font-bold tracking-tight text-white/80 transition-colors group-hover:text-white [writing-mode:vertical-rl] rotate-180"
+                    >
+                      {offer.name}
+                    </span>
+                    <Plus className="h-4 w-4 text-white/40 transition-colors group-hover:text-brand-500" />
+                  </div>
+                </div>
+
+                {/* Active content — fixed width so text never squishes mid-transition */}
+                <div
+                  className={`absolute bottom-0 left-0 w-[34rem] max-w-[calc(100vw-4rem)] p-7 transition-all duration-500 sm:p-9 ${
+                    isActive
+                      ? 'translate-y-0 opacity-100 delay-300'
+                      : 'pointer-events-none translate-y-4 opacity-0'
+                  }`}
+                >
+                  <p className="text-xs font-bold uppercase tracking-[0.25em] text-white/90 [text-shadow:0_1px_4px_rgba(0,0,0,0.6)]">
+                    {offer.name}
+                  </p>
+                  <h3 className="mt-3 font-display text-3xl font-extrabold leading-[1.02] tracking-tight text-white sm:text-4xl">
+                    {offer.heading}
+                  </h3>
+                  <p className="mt-3 max-w-md leading-relaxed text-white/70">{offer.desc}</p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {offer.items.map((item) => (
+                      <span
+                        key={item}
+                        className="rounded-full border border-white/25 bg-navy-900/40 px-3 py-1 text-xs font-medium text-white/80"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                  <Link
+                    to="/contact"
+                    onClick={(e) => e.stopPropagation()}
+                    className="group/cta mt-7 inline-flex items-center gap-3 rounded-full bg-brand-500 py-3 pl-6 pr-3 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
+                  >
+                    Apply Now
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-brand-500 transition-transform duration-300 group-hover/cta:translate-x-1">
+                      <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
+                    </span>
+                  </Link>
+                </div>
+              </article>
+            )
+          })}
+        </div>
+
+        {/* Footer line */}
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6">
+          <p className="text-sm text-white/40">
+            Not sure which category fits? We&apos;ll figure it out together.
+          </p>
+          <Link
+            to="/services"
+            className="text-sm font-semibold text-white underline-offset-4 transition-colors hover:text-brand-400 hover:underline"
+          >
+            Explore all services →
+          </Link>
         </div>
       </div>
     </section>

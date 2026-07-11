@@ -230,7 +230,7 @@ export default function Contact() {
         </aside>
 
         {/* ══ RIGHT — light form ═══════════════════════════════════ */}
-        <div className="bg-white px-6 pb-14 pt-32 sm:px-12 lg:px-16 lg:pb-16 lg:pt-52">
+        <div className="bg-[#fdfdfb] px-6 pb-14 pt-32 sm:px-12 lg:px-16 lg:pb-16 lg:pt-52">
           <div className="mx-auto w-full max-w-2xl">
             {submitted ? (
               <div className="animate-fade-up flex min-h-[60vh] flex-col items-start justify-center">
@@ -391,7 +391,7 @@ export default function Contact() {
       </section>
 
       {/* ══ Find-us — centered map ══════════════════════════════ */}
-      <section ref={mapRef} className="border-t-4 border-navy-900 bg-white px-6 py-16 lg:py-24">
+      <section ref={mapRef} className="border-t-4 border-navy-900 bg-[#fdfdfb] px-6 py-16 lg:py-24">
         <div className={`mx-auto max-w-7xl ${mapIn ? 'animate-fade-up' : 'opacity-0'}`}>
           {/* Eyebrow */}
           <div className="flex items-center justify-center gap-4 text-sm font-bold uppercase tracking-[0.3em] text-brand-500">

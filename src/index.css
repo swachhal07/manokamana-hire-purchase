@@ -77,6 +77,73 @@ body {
   animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* ── EMI calculator ─────────────────────────────────────────── */
+
+/* Torn receipt edge: row of downward-pointing triangles */
+.receipt-tear {
+  height: 12px;
+  background: conic-gradient(from 45deg at 50% 0, #ffffff 90deg, transparent 90deg);
+  background-size: 22px 12px;
+  background-repeat: repeat-x;
+}
+
+/* Faux barcode */
+.barcode {
+  background-image: repeating-linear-gradient(
+    90deg,
+    currentColor 0 2px,
+    transparent 2px 5px,
+    currentColor 5px 6px,
+    transparent 6px 10px,
+    currentColor 10px 13px,
+    transparent 13px 16px
+  );
+}
+
+/* Styled range slider */
+.emi-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to right,
+    #e11b22 0%,
+    #e11b22 var(--fill, 50%),
+    #e5e0d8 var(--fill, 50%),
+    #e5e0d8 100%
+  );
+  outline: none;
+}
+.emi-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 26px;
+  width: 26px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 7px solid #e11b22;
+  box-shadow: 0 2px 8px rgba(10, 28, 52, 0.25);
+  cursor: grab;
+  transition: transform 0.15s ease;
+}
+.emi-range::-webkit-slider-thumb:hover {
+  transform: scale(1.12);
+}
+.emi-range::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.05);
+}
+.emi-range::-moz-range-thumb {
+  height: 26px;
+  width: 26px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 7px solid #e11b22;
+  box-shadow: 0 2px 8px rgba(10, 28, 52, 0.25);
+  cursor: grab;
+}
+
 /* Honor reduced-motion preference */
 @media (prefers-reduced-motion: reduce) {
   html {
