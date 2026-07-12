@@ -7,9 +7,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 import imgPassenger from '../assets/images/photo-1612057473166-af2affdb92ad.avif'
 import imgTwoWheeler from '../assets/images/wp4366488.jpg'
-import imgCommercial from '../assets/images/tata-commercial-vehicles-rfk9d2h0ouvp4u8e.jpg'
+import imgCommercial from '../assets/images/70_kmph_top_speed.jpg'
 import imgAgriculture from '../assets/images/photo-1594771804886-a933bb2d609b.avif'
-import imgConstruction from '../assets/images/wp7435406.jpg'
+import imgConstruction from '../assets/images/sinharai power.jpg'
 import imgIndustrial from '../assets/images/photo-1647427060118-4911c9821b82.avif'
 import imgBusiness from '../assets/images/premium_photo-1681487178876-a1156952ec60.avif'
 

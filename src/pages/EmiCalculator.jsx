@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ArrowUpRight, Check, Phone } from 'lucide-react'
+import Eyebrow from '../components/Eyebrow'
 import { Link } from 'react-router-dom'
 
 const grain =
@@ -45,11 +46,7 @@ export default function EmiCalculator() {
         <div className="relative mx-auto max-w-6xl">
           {/* Header */}
           <div className="mx-auto max-w-2xl text-center">
-            <div className="animate-fade-up flex items-center justify-center gap-3 text-sm font-bold uppercase tracking-[0.28em] text-brand-500">
-              <span className="h-px w-10 bg-brand-500/60" />
-              EMI Calculator
-              <span className="h-px w-10 bg-brand-500/60" />
-            </div>
+            <Eyebrow className="animate-fade-up">EMI Calculator</Eyebrow>
             <h1
               className="animate-fade-up mt-6 font-display text-5xl font-extrabold leading-[0.98] tracking-tight text-navy-900 sm:text-6xl lg:text-7xl"
               style={{ animationDelay: '70ms' }}

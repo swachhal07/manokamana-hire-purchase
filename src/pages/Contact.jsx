@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   Navigation,
 } from 'lucide-react'
+import Eyebrow from '../components/Eyebrow'
 import brandImage from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.jpg'
 import consultImage from '../assets/images/vitaly-gariev-0kWem6X0Mc8-unsplash.jpg'
 
@@ -394,11 +395,7 @@ export default function Contact() {
       <section ref={mapRef} className="border-t-4 border-navy-900 bg-[#fdfdfb] px-6 py-16 lg:py-24">
         <div className={`mx-auto max-w-7xl ${mapIn ? 'animate-fade-up' : 'opacity-0'}`}>
           {/* Eyebrow */}
-          <div className="flex items-center justify-center gap-4 text-sm font-bold uppercase tracking-[0.3em] text-brand-500">
-            <span className="h-px w-8 bg-brand-500/40 sm:w-12" />
-            Find us
-            <span className="h-px w-8 bg-brand-500/40 sm:w-12" />
-          </div>
+          <Eyebrow>Find us</Eyebrow>
 
           {/* Heading */}
           <h2 className="mx-auto mt-6 max-w-4xl text-center font-display text-4xl font-extrabold leading-[1.02] tracking-tight text-navy-700 sm:text-5xl lg:text-6xl">

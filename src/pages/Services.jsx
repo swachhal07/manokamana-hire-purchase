@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Check } from 'lucide-react'
+import Eyebrow from '../components/Eyebrow'
 import imgPassenger from '../assets/images/photo-1612057473166-af2affdb92ad.avif'
 import imgTwoWheeler from '../assets/images/wp4366488.jpg'
-import imgCommercial from '../assets/images/tata-commercial-vehicles-rfk9d2h0ouvp4u8e.jpg'
+import imgCommercial from '../assets/images/70_kmph_top_speed.jpg'
 import imgAgriculture from '../assets/images/photo-1594771804886-a933bb2d609b.avif'
-import imgConstruction from '../assets/images/wp7435406.jpg'
-import imgIndustrial from '../assets/images/photo-1647427060118-4911c9821b82.avif'
+import imgConstruction from '../assets/images/sinharai power.jpg'
 import imgBusiness from '../assets/images/premium_photo-1681487178876-a1156952ec60.avif'
 
 const grain =
@@ -54,14 +54,6 @@ const services = [
     desc: 'Fund excavators, heavy machinery, and construction equipment to power your projects.',
     covers: ['Excavators', 'Loaders', 'Heavy machinery'],
     image: imgConstruction,
-  },
-  {
-    slug: 'industrial-machinery',
-    name: 'Industrial Machinery',
-    tagline: 'Power your production line',
-    desc: 'Finance factory machinery, generators, and processing equipment to scale up output.',
-    covers: ['Factory machinery', 'Generators', 'Processing units'],
-    image: imgIndustrial,
   },
   {
     slug: 'business-equipment',
@@ -187,11 +179,7 @@ export default function Services() {
 
         <div className="relative mx-auto w-full max-w-4xl px-6 text-center sm:px-10">
           {/* Eyebrow */}
-          <div className="animate-fade-up flex items-center justify-center gap-3 text-sm font-bold uppercase tracking-[0.25em] text-brand-500">
-            <span className="h-px w-10 bg-brand-500/60" />
-            Our services
-            <span className="h-px w-10 bg-brand-500/60" />
-          </div>
+          <Eyebrow className="animate-fade-up">Our services</Eyebrow>
 
           {/* Title */}
           <h1
@@ -341,11 +329,7 @@ export default function Services() {
         />
         <div className="relative mx-auto max-w-7xl">
           <Reveal className="mx-auto max-w-2xl text-center">
-            <div className="flex items-center justify-center gap-3 text-sm font-bold uppercase tracking-[0.25em] text-brand-500">
-              <span className="h-px w-10 bg-brand-500/60" />
-              How it works
-              <span className="h-px w-10 bg-brand-500/60" />
-            </div>
+            <Eyebrow>How it works</Eyebrow>
             <h2 className="mt-6 font-display text-3xl font-extrabold leading-[1.05] tracking-tight text-navy-900 sm:text-4xl">
               Four steps from enquiry to ownership.
             </h2>
@@ -366,6 +350,22 @@ export default function Services() {
               </Reveal>
             ))}
           </div>
+
+          {/* Financial disclosures — quiet strip, links to the unlisted Reports page */}
+          <Reveal className="mt-12 text-center">
+            <p className="text-base text-navy-900/55">
+              Want to see how we&apos;re doing?{' '}
+              <Link
+                to="/reports"
+                className="group inline-flex items-center gap-1.5 font-bold text-brand-500 transition-colors hover:text-brand-600"
+              >
+                View our financial reports
+                <span className="transition-transform duration-300 group-hover:translate-x-1">
+                  →
+                </span>
+              </Link>
+            </p>
+          </Reveal>
         </div>
       </section>
 

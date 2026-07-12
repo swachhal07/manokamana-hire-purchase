@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
+import Eyebrow from '../components/Eyebrow'
 import dugarLogo from '../assets/images/dugar-logo.png'
 import teamImage from '../assets/images/vitaly-gariev-LS5dCL0NkhE-unsplash.jpg'
 import meetingImage from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.jpg'
@@ -91,10 +92,7 @@ export default function About() {
         <div className="relative mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
           {/* Left — words */}
           <div>
-            <div className="animate-fade-up flex items-center gap-3 text-sm font-bold uppercase tracking-[0.28em] text-brand-500">
-              <span className="h-px w-10 bg-brand-500/60" />
-              About us
-            </div>
+            <Eyebrow align="left" className="animate-fade-up">About us</Eyebrow>
 
             <h1
               className="animate-fade-up mt-7 font-display text-5xl font-extrabold leading-[0.98] tracking-tight text-navy-900 sm:text-6xl lg:text-[4.4rem]"
@@ -111,13 +109,18 @@ export default function About() {
               className="animate-fade-up mt-7 max-w-lg text-lg leading-relaxed text-navy-900/65"
               style={{ animationDelay: '140ms' }}
             >
-              Manokamana Hire Purchase is a Kathmandu-based financing company
-              backed by the MV Dugar Group. We help individuals, families, and
-              businesses across Nepal own the vehicles and machines that earn
-              their living, from a first two-wheeler to a full commercial
-              fleet, paid for in instalments that actually make sense for the
-              way real income arrives. No lump sums, no gatekeeping, just a
-              clear path from wanting something to owning it.
+              Manokamana Hire Purchase Pvt. Ltd. is a financial institution
+              licensed by Nepal Rastra Bank, Central Bank of Nepal to conduct
+              hire purchase loan business, in accordance with the policy and
+              procedural arrangements for granting approval to companies
+              providing Hire Purchase Loans. This company was established in
+              January 2020 with the aim of providing financial services to its
+              automotive customers. Over the years, it has been providing
+              multi-brand finance to thousands of low-income customers, financing
+              the purchase of vehicles for self-employment purposes among
+              underprivileged groups to uplift their livelihood, farmers, and
+              customers who are unable to easily obtain loans from banks and
+              financial institutions.
             </p>
 
             {/* Dictionary entry card */}
@@ -204,10 +207,7 @@ export default function About() {
           {/* Backing */}
           <div className="grid items-center gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
             <Reveal>
-              <div className="flex items-center gap-3 text-sm font-bold uppercase tracking-[0.28em] text-brand-500">
-                <span className="h-px w-10 bg-brand-500/60" />
-                Our backing
-              </div>
+              <Eyebrow align="left">Our backing</Eyebrow>
               <h2 className="mt-6 font-display text-4xl font-extrabold leading-[1.02] tracking-tight text-white sm:text-5xl">
                 The house
                 <br />
@@ -264,11 +264,7 @@ export default function About() {
 
         <div className="relative mx-auto max-w-6xl">
           <Reveal className="mx-auto max-w-2xl text-center">
-            <div className="flex items-center justify-center gap-3 text-sm font-bold uppercase tracking-[0.28em] text-brand-500">
-              <span className="h-px w-10 bg-brand-500/60" />
-              How we work
-              <span className="h-px w-10 bg-brand-500/60" />
-            </div>
+            <Eyebrow>How we work</Eyebrow>
             <h2 className="mt-6 font-display text-4xl font-extrabold leading-[1.02] tracking-tight text-navy-900 sm:text-5xl">
               Four things we
               <br />

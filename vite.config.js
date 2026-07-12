@@ -11,4 +11,11 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    // In dev, /api requests go to the Express backend (backend/ — port 5000).
+    // In production set VITE_API_URL instead (see src/lib/api.js).
+    proxy: {
+      '/api': 'http://localhost:5000',
+    },
+  },
 })

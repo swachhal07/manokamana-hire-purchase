@@ -1,4 +1,5 @@
 import { Star } from 'lucide-react'
+import Eyebrow from './Eyebrow'
 
 const reviews = [
   {
@@ -49,13 +50,7 @@ export default function Testimonials() {
 <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
         {/* Header */}
         <div className="text-center">
-          <div className="flex items-center justify-center gap-4">
-            <span className="h-px w-10 bg-brand-500" />
-            <span className="text-sm font-bold uppercase tracking-[0.25em] text-brand-500">
-              What Our Customers Say
-            </span>
-            <span className="h-px w-10 bg-brand-500" />
-          </div>
+          <Eyebrow>What Our Customers Say</Eyebrow>
           <h2 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-extrabold leading-tight tracking-tight text-navy-700 sm:text-5xl">
             Real Reviews. Real Customers.
           </h2>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ChevronDown } from 'lucide-react'
 import manokamanaLogo from '../assets/images/manokamana-logo.png'
@@ -15,19 +15,47 @@ const navItems = [
     ],
   },
   { label: 'Blog', path: '/blog' },
+  { label: 'Careers', path: '/careers' },
 ]
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [hidden, setHidden] = useState(false)
   const { pathname } = useLocation()
   const isHome = pathname === '/'
 
+  // Fixed navbar: transparent over the home hero, solid once scrolled.
+  // Hides when scrolling down, reveals when scrolling back up.
+  useEffect(() => {
+    let lastY = window.scrollY
+    const onScroll = () => {
+      const y = window.scrollY
+      setScrolled(y > 20)
+      if (y > lastY && y > 80) setHidden(true)
+      else if (y < lastY) setHidden(false)
+      lastY = y
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // "Solid" = white background with dark text. Always solid off the home
+  // page; on home it turns solid as soon as the user scrolls.
+  const solid = !isHome || scrolled
+  // Keep the bar visible whenever the mobile menu is open.
+  const shouldHide = hidden && !open
+
   return (
     <header
-      className={`absolute inset-x-0 top-0 z-50 ${isHome
-          ? 'group transition-colors duration-300 hover:bg-white hover:shadow-[0_10px_30px_-12px_rgba(10,28,52,0.25)]'
-          : 'border-b border-gray-100 bg-white shadow-[0_10px_30px_-12px_rgba(10,28,52,0.25)]'
-        }`}
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        shouldHide ? '-translate-y-full' : 'translate-y-0'
+      } ${
+        solid
+          ? 'border-b border-gray-100 bg-white shadow-[0_10px_30px_-12px_rgba(10,28,52,0.25)]'
+          : 'bg-transparent'
+      }`}
     >
       <nav className="relative mx-auto flex max-w-[1600px] items-center justify-between px-6 py-6 lg:px-10">
         {/* Logos side by side, separated by a divider */}
@@ -38,8 +66,7 @@ export default function Navbar() {
             className="h-14 w-auto object-contain"
           />
           <span
-            className={`h-11 w-px ${isHome ? 'bg-white/40 transition-colors group-hover:bg-gray-300' : 'bg-gray-300'
-              }`}
+            className={`h-11 w-px transition-colors ${solid ? 'bg-gray-300' : 'bg-white/40'}`}
           />
           <img
             src={manokamanaLogo}
@@ -51,9 +78,9 @@ export default function Navbar() {
         {/* Center nav */}
         <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-10 lg:flex">
           {navItems.map((item) => {
-            const className = `flex items-center gap-1.5 text-[17px] font-medium transition-colors ${isHome
-                ? 'text-white/90 group-hover:text-gray-700 group-hover:hover:text-brand-600'
-                : 'text-gray-700 hover:text-brand-600'
+            const className = `flex items-center gap-1.5 text-[17px] font-medium transition-colors ${solid
+                ? 'text-gray-700 hover:text-brand-600'
+                : 'text-white/90 hover:text-white'
               }`
             if (item.children) {
               return (
@@ -114,9 +141,9 @@ export default function Navbar() {
           <Link
             to="/emi-calculator"
             className={`hidden rounded-full border px-5 py-3 text-[15px] font-semibold transition-colors sm:inline-block ${
-              isHome
-                ? 'border-white/50 text-white group-hover:border-brand-500 group-hover:text-brand-600'
-                : 'border-brand-500 text-brand-600 hover:bg-brand-500 hover:text-white'
+              solid
+                ? 'border-brand-500 text-brand-600 hover:bg-brand-500 hover:text-white'
+                : 'border-white/50 text-white hover:bg-white/10'
             }`}
           >
             EMI Calculator
@@ -132,7 +159,7 @@ export default function Navbar() {
             {[0, 1, 2].map((i) => (
               <span
                 key={i}
-                className={`block h-0.5 w-6 transition-colors ${i > 0 ? 'mt-1.5' : ''} ${isHome ? 'bg-white group-hover:bg-gray-800' : 'bg-gray-800'
+                className={`block h-0.5 w-6 transition-colors ${i > 0 ? 'mt-1.5' : ''} ${solid ? 'bg-gray-800' : 'bg-white'
                   }`}
               />
             ))}

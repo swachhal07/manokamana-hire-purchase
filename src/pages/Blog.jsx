@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowUpRight } from 'lucide-react'
-import { featured, posts } from '../data/posts'
+import Eyebrow from '../components/Eyebrow'
+import { featured as initialFeatured, posts as initialPosts } from '../data/posts'
+import { getBlog } from '../lib/blogStore'
 
 const grain =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
@@ -63,6 +65,20 @@ function Meta({ category, date, readTime, light = false }) {
 /* ── Page ──────────────────────────────────────────────────────── */
 
 export default function Blog() {
+  // Render the built-in articles instantly, then fold in API posts.
+  const [{ featured, posts }, setBlog] = useState({
+    featured: initialFeatured,
+    posts: initialPosts,
+  })
+
+  useEffect(() => {
+    let alive = true
+    getBlog().then((data) => alive && setBlog(data))
+    return () => {
+      alive = false
+    }
+  }, [])
+
   return (
     <>
       {/* ══ Masthead ═════════════════════════════════════════════ */}
@@ -73,11 +89,7 @@ export default function Blog() {
         />
 
         <div className="relative mx-auto max-w-3xl text-center">
-          <div className="animate-fade-up flex items-center justify-center gap-3 text-sm font-bold uppercase tracking-[0.28em] text-brand-500">
-            <span className="h-px w-10 bg-brand-500/60" />
-            Our blog
-            <span className="h-px w-10 bg-brand-500/60" />
-          </div>
+          <Eyebrow className="animate-fade-up">Our blog</Eyebrow>
 
           <h1
             className="animate-fade-up mt-7 font-display font-extrabold leading-[0.95] tracking-tight text-navy-900"
