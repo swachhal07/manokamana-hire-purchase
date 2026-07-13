@@ -231,11 +231,11 @@ export default function Leadership() {
 
                   {/* Name plate */}
                   <div className="mt-5 text-center">
-                    <h3 className="font-display text-xl font-extrabold tracking-tight text-navy-900 transition-colors duration-300 group-hover:text-brand-600">
+                    <h3 className="font-display text-2xl font-extrabold tracking-tight text-navy-900 transition-colors duration-300 group-hover:text-brand-600">
                       {management[0].name}
                     </h3>
                     <div className="mx-auto mt-2 h-0.5 w-7 bg-brand-500 transition-all duration-500 group-hover:w-12" />
-                    <p className="mt-2 text-[11px] font-bold uppercase tracking-[0.25em] text-navy-900/45">
+                    <p className="mt-2.5 text-[13px] font-bold uppercase tracking-[0.25em] text-navy-900/45">
                       {management[0].role}
                     </p>
                   </div>
@@ -264,11 +264,11 @@ export default function Leadership() {
 
                     {/* Name plate */}
                     <div className="mt-4">
-                      <h3 className="font-display text-lg font-extrabold tracking-tight text-navy-900 transition-colors duration-300 group-hover:text-brand-600">
+                      <h3 className="font-display text-xl font-extrabold tracking-tight text-navy-900 transition-colors duration-300 group-hover:text-brand-600">
                         {m.name}
                       </h3>
                       <div className="mt-2 h-0.5 w-6 bg-brand-500 transition-all duration-500 group-hover:w-10" />
-                      <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.22em] text-navy-900/45">
+                      <p className="mt-2 text-[12px] font-bold uppercase tracking-[0.22em] text-navy-900/45">
                         {m.role}
                       </p>
                     </div>

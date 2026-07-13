@@ -114,7 +114,15 @@ export default function Footer() {
           © {new Date().getFullYear()} Manokamana Hire Purchase Pvt. Ltd. All rights reserved.
         </p>
         <p className="mt-2 text-base text-gray-500">
-          Developed by <span className="font-semibold text-brand-500">Swachhal Lamsal</span>
+          Developed by{' '}
+          <a
+            href="https://swachhalportfolio.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-brand-500 transition-colors hover:text-brand-600 hover:underline"
+          >
+            Swachhal Lamsal
+          </a>
         </p>
       </div>
     </footer>

@@ -1,5 +1,5 @@
 import imgPassenger from '../assets/images/photo-1612057473166-af2affdb92ad.avif'
-import imgTwoWheeler from '../assets/images/wp4366488.jpg'
+import imgTwoWheeler from '../assets/images/rv-4006491267651bec.avif'
 import imgCommercial from '../assets/images/tata-commercial-vehicles-rfk9d2h0ouvp4u8e.jpg'
 import imgAgriculture from '../assets/images/photo-1594771804886-a933bb2d609b.avif'
 import imgOffice from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.jpg'
