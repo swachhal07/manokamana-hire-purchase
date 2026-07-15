@@ -52,7 +52,7 @@ export default function Footer() {
         <rect width="100%" height="100%" filter="url(#topo)" />
       </svg>
 
-      <div className="relative mx-auto max-w-4xl px-6 py-16 text-center lg:py-20">
+      <div className="relative mx-auto max-w-4xl px-6 py-12 text-center lg:py-14">
         {/* Logos */}
         <div className="flex justify-center">
           <div className="flex items-center gap-3">
@@ -67,12 +67,12 @@ export default function Footer() {
         </div>
 
         {/* Headline */}
-        <h2 className="mt-8 font-display text-5xl font-extrabold tracking-tight text-navy-700 sm:text-6xl">
+        <h2 className="mt-6 font-display text-5xl font-extrabold tracking-tight text-navy-700 sm:text-6xl">
           Driving Nepal <span className="text-brand-500">Forward.</span>
         </h2>
 
         {/* Nav */}
-        <nav className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-lg font-medium">
+        <nav className="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-lg font-medium">
           {links.map((l) => (
             <Link
               key={l.label}
@@ -85,15 +85,15 @@ export default function Footer() {
         </nav>
 
         {/* Contact */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-lg text-gray-600">
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2 text-lg text-gray-600">
           <span>Kathmandu, Nepal</span>
-          <span className="inline-flex items-center gap-x-4 sm:whitespace-nowrap">
+          <span className="inline-flex items-center gap-x-2.5 sm:whitespace-nowrap">
             <Dot />
             <a href="tel:+97718002562 58" className="transition-colors hover:text-brand-500">
               +977-1-800-256-258
             </a>
           </span>
-          <span className="inline-flex items-center gap-x-4 sm:whitespace-nowrap">
+          <span className="inline-flex items-center gap-x-2.5 sm:whitespace-nowrap">
             <Dot />
             <a
               href="mailto:info.manokamanahirepurchase@mvdugar.com"
@@ -105,10 +105,10 @@ export default function Footer() {
         </div>
 
         {/* Divider */}
-        <hr className="mx-auto mt-12 max-w-2xl border-gray-200" />
+        <hr className="mx-auto mt-8 max-w-2xl border-gray-200" />
 
         {/* Legal */}
-        <div className="mt-8 flex items-center justify-center gap-6 text-base">
+        <div className="mt-6 flex items-center justify-center gap-6 text-base">
           <a href="#" className="text-gray-500 transition-colors hover:text-navy-700">
             Privacy Policy
           </a>
