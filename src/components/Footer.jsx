@@ -85,19 +85,23 @@ export default function Footer() {
         </nav>
 
         {/* Contact */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-lg text-gray-600">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-lg text-gray-600">
           <span>Kathmandu, Nepal</span>
-          <Dot />
-          <a href="tel:+97718002562 58" className="transition-colors hover:text-brand-500">
-            +977-1-800-256-258
-          </a>
-          <Dot />
-          <a
-            href="mailto:info.manokamanahirepurchase@mvdugar.com"
-            className="transition-colors hover:text-brand-500"
-          >
-            info.manokamanahirepurchase@mvdugar.com
-          </a>
+          <span className="inline-flex items-center gap-x-4 sm:whitespace-nowrap">
+            <Dot />
+            <a href="tel:+97718002562 58" className="transition-colors hover:text-brand-500">
+              +977-1-800-256-258
+            </a>
+          </span>
+          <span className="inline-flex items-center gap-x-4 sm:whitespace-nowrap">
+            <Dot />
+            <a
+              href="mailto:info.manokamanahirepurchase@mvdugar.com"
+              className="break-all transition-colors hover:text-brand-500"
+            >
+              info.manokamanahirepurchase@mvdugar.com
+            </a>
+          </span>
         </div>
 
         {/* Divider */}
