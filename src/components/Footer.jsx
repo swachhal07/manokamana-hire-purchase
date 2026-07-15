@@ -52,7 +52,7 @@ export default function Footer() {
         <rect width="100%" height="100%" filter="url(#topo)" />
       </svg>
 
-      <div className="relative mx-auto max-w-4xl px-6 py-16 text-center lg:py-20">
+      <div className="relative mx-auto max-w-4xl px-6 pb-16 pt-10 text-center lg:pb-20 lg:pt-12">
         {/* Logos */}
         <div className="flex justify-center">
           <div className="flex items-center gap-3">
@@ -72,7 +72,7 @@ export default function Footer() {
         </h2>
 
         {/* Nav */}
-        <nav className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-lg font-medium">
+        <nav className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-lg font-medium">
           {links.map((l) => (
             <Link
               key={l.label}
@@ -84,22 +84,22 @@ export default function Footer() {
           ))}
         </nav>
 
-        {/* Contact */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-2 text-lg text-gray-600">
+        {/* Contact — one row; gaps widen on larger screens */}
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-base text-gray-600 sm:text-lg md:gap-x-8 lg:gap-x-10">
           <span>Kathmandu, Nepal</span>
-          <span className="inline-flex items-center gap-x-10 sm:whitespace-nowrap">
+          <span className="inline-flex items-center gap-x-5 sm:whitespace-nowrap md:gap-x-8 lg:gap-x-10">
             <Dot />
-            <a href="tel:+97718002562 58" className="transition-colors hover:text-brand-500">
-              +977-1-800-256-258
+            <a href="tel:+977014163533" className="transition-colors hover:text-brand-500">
+              01-4163533
             </a>
           </span>
-          <span className="inline-flex items-center gap-x-10 sm:whitespace-nowrap">
+          <span className="inline-flex items-center gap-x-5 sm:whitespace-nowrap md:gap-x-8 lg:gap-x-10">
             <Dot />
             <a
-              href="mailto:info.manokamanahirepurchase@mvdugar.com"
+              href="mailto:info@manokamanahirepurchase.com.np"
               className="break-all transition-colors hover:text-brand-500"
             >
-              info.manokamanahirepurchase@mvdugar.com
+              info@manokamanahirepurchase.com.np
             </a>
           </span>
         </div>

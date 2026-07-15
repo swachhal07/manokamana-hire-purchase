@@ -22,6 +22,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [hidden, setHidden] = useState(false)
+  const [hovered, setHovered] = useState(false)
   const { pathname } = useLocation()
   const isHome = pathname === '/'
 
@@ -42,19 +43,21 @@ export default function Navbar() {
   }, [])
 
   // "Solid" = white background with dark text. Always solid off the home
-  // page; on home it turns solid as soon as the user scrolls.
-  const solid = !isHome || scrolled
+  // page; on home it turns solid as soon as the user scrolls or hovers the bar.
+  const solid = !isHome || scrolled || hovered
   // Keep the bar visible whenever the mobile menu is open.
   const shouldHide = hidden && !open
 
   return (
     <header
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         shouldHide ? '-translate-y-full' : 'translate-y-0'
       } ${
         solid
           ? 'border-b border-gray-100 bg-white shadow-[0_10px_30px_-12px_rgba(10,28,52,0.25)]'
-          : 'bg-transparent'
+          : 'border-b border-transparent bg-transparent'
       }`}
     >
       <nav className="relative mx-auto flex max-w-[1600px] items-center justify-between px-6 py-6 lg:px-10">

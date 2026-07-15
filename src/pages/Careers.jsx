@@ -193,7 +193,7 @@ export default function Careers() {
                     )}
                   </div>
                   <a
-                    href={`mailto:info.manokamanahirepurchase@mvdugar.com?subject=${encodeURIComponent(
+                    href={`mailto:info@manokamanahirepurchase.com.np?subject=${encodeURIComponent(
                       `Application: ${job.title}`,
                     )}`}
                     className="inline-flex items-center gap-1.5 rounded-full bg-navy-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors group-hover:bg-brand-500"

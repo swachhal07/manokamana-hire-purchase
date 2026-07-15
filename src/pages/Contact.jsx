@@ -17,11 +17,11 @@ import brandImage from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.jpg'
 import consultImage from '../assets/images/vitaly-gariev-0kWem6X0Mc8-unsplash.jpg'
 
 // Web3Forms access key (https://web3forms.com). Submissions are delivered to
-// the email the key was created for (info.manokamanahirepurchase@mvdugar.com).
+// the email the key was created for (info@manokamanahirepurchase.com.np).
 // This key is safe to keep in client code — it only lets people send to that
 // inbox, nothing else. An env var, if set, overrides it.
 const WEB3FORMS_KEY =
-  import.meta.env.VITE_WEB3FORMS_KEY || '5327bf30-be6f-4145-96c7-8fe862aa0457'
+  import.meta.env.VITE_WEB3FORMS_KEY || '7728a5c7-8452-4229-8523-48c577d0cecb'
 
 const grain =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
@@ -43,12 +43,12 @@ const loanTypes = [
 ]
 
 const channels = [
-  { icon: Phone, label: 'Call us', value: '+977-1-800-256-258', href: 'tel:+9771800256258' },
+  { icon: Phone, label: 'Call us', value: '01-4163533', href: 'tel:+977014163533' },
   {
     icon: Mail,
     label: 'Email us',
-    value: 'info.manokamanahirepurchase@mvdugar.com',
-    href: 'mailto:info.manokamanahirepurchase@mvdugar.com',
+    value: 'info@manokamanahirepurchase.com.np',
+    href: 'mailto:info@manokamanahirepurchase.com.np',
   },
   {
     icon: MapPin,
