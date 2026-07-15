@@ -1,5 +1,6 @@
 import { Star } from 'lucide-react'
 import Eyebrow from './Eyebrow'
+import useOffscreenPaused from '../hooks/useOffscreenPaused'
 
 const reviews = [
   {
@@ -45,6 +46,8 @@ function Stars() {
 }
 
 export default function Testimonials() {
+  const [marqueeRef, paused] = useOffscreenPaused()
+
   return (
     <section className="relative bg-gray-50 pb-24 pt-14 lg:pb-32 lg:pt-16">
 <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
@@ -58,8 +61,12 @@ export default function Testimonials() {
       </div>
 
       {/* Auto-scrolling marquee (left → right) */}
-      <div className="relative mt-14 overflow-hidden">
-        <div className="animate-marquee-reverse flex w-max py-10">
+      <div ref={marqueeRef} className="relative mt-14 overflow-hidden">
+        <div
+          className={`animate-marquee-reverse flex w-max py-10 ${
+            paused ? '[animation-play-state:paused]' : ''
+          }`}
+        >
           {[...reviews, ...reviews].map((r, i) => (
             <article
               key={i}

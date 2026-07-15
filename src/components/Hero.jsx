@@ -12,12 +12,38 @@ const backgrounds = [bg1, bg2, bg3, bg4]
 export default function Hero() {
   const [current, setCurrent] = useState(0)
   const contentRef = useRef(null)
+  const sectionRef = useRef(null)
 
+  // Only advance (and repaint) the full-screen slideshow while the hero is
+  // actually on screen. Left running, its opacity crossfades keep repainting
+  // the whole viewport and make interactions elsewhere on the page (e.g. the
+  // FAQ accordion) stutter.
   useEffect(() => {
-    const id = setInterval(() => {
-      setCurrent((i) => (i + 1) % backgrounds.length)
-    }, 5000)
-    return () => clearInterval(id)
+    const el = sectionRef.current
+    if (!el) return
+
+    let id
+    const start = () => {
+      if (id) return
+      id = setInterval(() => {
+        setCurrent((i) => (i + 1) % backgrounds.length)
+      }, 5000)
+    }
+    const stop = () => {
+      clearInterval(id)
+      id = undefined
+    }
+
+    const io = new IntersectionObserver(
+      ([entry]) => (entry.isIntersecting ? start() : stop()),
+      { threshold: 0.15 }
+    )
+    io.observe(el)
+
+    return () => {
+      stop()
+      io.disconnect()
+    }
   }, [])
 
   // GSAP load-in: staggered reveal of the hero headline and CTAs
@@ -41,7 +67,7 @@ export default function Hero() {
   }, [])
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-navy-700">
+    <section ref={sectionRef} className="relative min-h-screen w-full overflow-hidden bg-navy-700">
       {/* Rotating background slideshow */}
       {backgrounds.map((src, i) => (
         <div

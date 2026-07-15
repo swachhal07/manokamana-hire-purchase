@@ -1,3 +1,5 @@
+import useOffscreenPaused from '../hooks/useOffscreenPaused'
+
 const items = [
   'Trusted Partner',
   'Hire Purchase',
@@ -23,10 +25,15 @@ function Sparkle() {
 export default function Marquee() {
   // Duplicate the list so the scroll loops seamlessly
   const loop = [...items, ...items]
+  const [ref, paused] = useOffscreenPaused()
 
   return (
-    <div className="w-full overflow-hidden py-5">
-      <div className="animate-marquee flex w-max items-center gap-10">
+    <div ref={ref} className="w-full overflow-hidden py-5">
+      <div
+        className={`animate-marquee flex w-max items-center gap-10 ${
+          paused ? '[animation-play-state:paused]' : ''
+        }`}
+      >
         {loop.map((item, i) => (
           <div key={i} className="flex items-center gap-10">
             <span className="whitespace-nowrap text-xl font-semibold tracking-wide text-white">

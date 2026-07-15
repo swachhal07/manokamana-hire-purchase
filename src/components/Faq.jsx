@@ -1,4 +1,4 @@
-import { useState, useRef, useLayoutEffect } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Minus, ChevronUp, ArrowRight } from 'lucide-react'
 
@@ -29,10 +29,6 @@ const pad = (n) => String(n + 1).padStart(2, '0')
 
 export default function Faq() {
   const [open, setOpen] = useState(0)
-  const contentRefs = useRef([])
-  // Populate refs before first paint so the initially-open item measures correctly
-  const [ready, setReady] = useState(false)
-  useLayoutEffect(() => setReady(true), [])
 
   return (
     <section className="bg-navy-900 pb-24 pt-14 text-white lg:pb-32 lg:pt-16">
@@ -114,22 +110,14 @@ export default function Faq() {
                 </button>
 
                 <div
-                  ref={(el) => {
-                    contentRefs.current[i] = el
-                  }}
-                  className="overflow-hidden transition-[max-height,opacity] duration-300 ease-out"
-                  style={{
-                    maxHeight: isOpen
-                      ? ready
-                        ? `${contentRefs.current[i]?.scrollHeight ?? 0}px`
-                        : 'none'
-                      : '0px',
-                    opacity: isOpen ? 1 : 0,
-                  }}
+                  className="grid transition-[grid-template-rows] duration-300 ease-out"
+                  style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
                 >
-                  <p className="px-6 pb-6 pl-[3.25rem] text-lg leading-relaxed text-gray-600">
-                    {item.a}
-                  </p>
+                  <div className="overflow-hidden">
+                    <p className="px-6 pb-6 pl-[3.25rem] text-lg leading-relaxed text-gray-600">
+                      {item.a}
+                    </p>
+                  </div>
                 </div>
               </div>
             )
