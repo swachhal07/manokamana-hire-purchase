@@ -16,6 +16,13 @@ import Eyebrow from '../components/Eyebrow'
 import brandImage from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.jpg'
 import consultImage from '../assets/images/vitaly-gariev-0kWem6X0Mc8-unsplash.jpg'
 
+// Web3Forms access key (https://web3forms.com). Submissions are delivered to
+// the email the key was created for (info.manokamanahirepurchase@mvdugar.com).
+// This key is safe to keep in client code — it only lets people send to that
+// inbox, nothing else. An env var, if set, overrides it.
+const WEB3FORMS_KEY =
+  import.meta.env.VITE_WEB3FORMS_KEY || '5327bf30-be6f-4145-96c7-8fe862aa0457'
+
 const grain =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
 
@@ -75,6 +82,8 @@ function useReveal() {
 export default function Contact() {
   const [inquiry, setInquiry] = useState('new')
   const [submitted, setSubmitted] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState('')
   const [form, setForm] = useState({
     name: '',
     phone: '',
@@ -89,13 +98,52 @@ export default function Contact() {
     setForm((f) => ({ ...f, [key]: value }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setSubmitted(true)
+    setError('')
+
+    if (!WEB3FORMS_KEY) {
+      setError('The contact form is not configured yet. Please call or email us in the meantime.')
+      return
+    }
+
+    setSending(true)
+    try {
+      const inquiryLabel = inquiryTypes.find((t) => t.id === inquiry)?.label || inquiry
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: `New enquiry (${inquiryLabel}) — ${form.name}`,
+          from_name: 'Manokamana Hire Purchase Website',
+          replyto: form.email, // reply goes straight to the customer
+          // Field order + labels below control how the notification email reads.
+          'Enquiry type': inquiryLabel,
+          'Full name': form.name,
+          'Phone number': form.phone,
+          'Email address': form.email,
+          'Interested in': form.loan,
+          Message: form.message,
+        }),
+      })
+
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Could not send your message.')
+      }
+
+      setSubmitted(true)
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again or call us.')
+    } finally {
+      setSending(false)
+    }
   }
 
   const resetForm = () => {
     setSubmitted(false)
+    setError('')
     setForm({ name: '', phone: '', email: '', loan: loanTypes[0], message: '', consent: false })
     setInquiry('new')
   }
@@ -332,13 +380,21 @@ export default function Contact() {
                   </span>
                 </label>
 
+                {/* Error */}
+                {error && (
+                  <p className="mt-5 rounded-xl bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-600 ring-1 ring-red-100">
+                    {error}
+                  </p>
+                )}
+
                 {/* Submit */}
                 <div className="mt-7 flex justify-center">
                   <button
                     type="submit"
-                    className="group inline-flex w-full items-center justify-center gap-3 rounded-full bg-brand-500 py-3.5 pl-8 pr-4 text-base font-semibold text-white transition-all hover:bg-brand-600 active:scale-[0.99] sm:w-auto"
+                    disabled={sending}
+                    className="group inline-flex w-full items-center justify-center gap-3 rounded-full bg-brand-500 py-3.5 pl-8 pr-4 text-base font-semibold text-white transition-all hover:bg-brand-600 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
                   >
-                    Send message
+                    {sending ? 'Sending…' : 'Send message'}
                     <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-brand-500 transition-transform duration-300 group-hover:translate-x-1">
                       <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
                     </span>
