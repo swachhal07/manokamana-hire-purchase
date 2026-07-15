@@ -92,8 +92,11 @@ export default function Footer() {
             +977-1-800-256-258
           </a>
           <Dot />
-          <a href="mailto:info@manokamana.com.np" className="transition-colors hover:text-brand-500">
-            info@manokamana.com.np
+          <a
+            href="mailto:info.manokamanahirepurchase@mvdugar.com"
+            className="transition-colors hover:text-brand-500"
+          >
+            info.manokamanahirepurchase@mvdugar.com
           </a>
         </div>
 

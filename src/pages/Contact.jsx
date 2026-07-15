@@ -44,7 +44,12 @@ const loanTypes = [
 
 const channels = [
   { icon: Phone, label: 'Call us', value: '+977-1-800-256-258', href: 'tel:+9771800256258' },
-  { icon: Mail, label: 'Email us', value: 'info@manokamana.com.np', href: 'mailto:info@manokamana.com.np' },
+  {
+    icon: Mail,
+    label: 'Email us',
+    value: 'info.manokamanahirepurchase@mvdugar.com',
+    href: 'mailto:info.manokamanahirepurchase@mvdugar.com',
+  },
   {
     icon: MapPin,
     label: 'Visit us',
