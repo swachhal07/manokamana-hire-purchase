@@ -11,7 +11,6 @@ import imgCommercial from '../assets/images/70_kmph_top_speed.jpg'
 import imgAgriculture from '../assets/images/photo-1594771804886-a933bb2d609b.avif'
 import imgConstruction from '../assets/images/sinharai power.jpg'
 import imgIndustrial from '../assets/images/photo-1647427060118-4911c9821b82.avif'
-import imgBusiness from '../assets/images/premium_photo-1681487178876-a1156952ec60.avif'
 
 const offers = [
   {
@@ -55,13 +54,6 @@ const offers = [
     desc: 'Finance factory machinery, generators, and processing equipment to scale up output.',
     items: ['Factory machinery', 'Generators', 'Processing units'],
     image: imgIndustrial,
-  },
-  {
-    name: 'Business Equipment',
-    heading: 'Equip your enterprise',
-    desc: 'Fund the tools, systems, and equipment your growing business needs to keep moving.',
-    items: ['Office equipment', 'IT systems', 'Fit-out & tools'],
-    image: imgBusiness,
   },
 ]
 

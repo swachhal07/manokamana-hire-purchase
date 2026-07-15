@@ -280,7 +280,7 @@ export default function Leadership() {
 
           {/* Register foot rule */}
           <div className="mt-16 flex items-center justify-between border-t border-navy-900/15 pt-5 text-[11px] font-bold uppercase tracking-[0.25em] text-navy-900/40 lg:mt-24">
-            <span>Board register — {String(leaders.length).padStart(2, '0')} members</span>
+            <span>Management register — {String(management.length).padStart(2, '0')} members</span>
             <span className="hidden sm:inline">
               A member of the <span className="text-navy-900/70">MV Dugar Group</span>
             </span>

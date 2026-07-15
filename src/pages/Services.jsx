@@ -7,7 +7,6 @@ import imgTwoWheeler from '../assets/images/rv-4006491267651bec.avif'
 import imgCommercial from '../assets/images/70_kmph_top_speed.jpg'
 import imgAgriculture from '../assets/images/photo-1594771804886-a933bb2d609b.avif'
 import imgConstruction from '../assets/images/sinharai power.jpg'
-import imgBusiness from '../assets/images/premium_photo-1681487178876-a1156952ec60.avif'
 
 const grain =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
@@ -54,14 +53,6 @@ const services = [
     desc: 'Fund excavators, heavy machinery, and construction equipment to power your projects.',
     covers: ['Excavators', 'Loaders', 'Heavy machinery'],
     image: imgConstruction,
-  },
-  {
-    slug: 'business-equipment',
-    name: 'Business Equipment',
-    tagline: 'Equip your enterprise',
-    desc: 'Fund the tools, systems, and equipment your growing business needs to keep moving.',
-    covers: ['Office equipment', 'IT systems', 'Fit-out & tools'],
-    image: imgBusiness,
   },
 ]
 
@@ -240,7 +231,7 @@ export default function Services() {
                   {/* Running header */}
                   <Reveal className="flex items-baseline justify-between gap-6 text-[11px] font-bold uppercase tracking-[0.22em] text-navy-900/50">
                     <span>
-                      Chapter {num} <span className="text-brand-600">/</span> 07
+                      Chapter {num} <span className="text-brand-600">/</span> {String(services.length).padStart(2, '0')}
                     </span>
                     <span className="hidden sm:inline">{s.tagline}</span>
                   </Reveal>

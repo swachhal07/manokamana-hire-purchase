@@ -41,44 +41,15 @@ const channels = [
   {
     icon: MapPin,
     label: 'Visit us',
-    value: 'MV Dugar Group, Kamaladi, Kathmandu',
-    href: 'https://maps.google.com/?q=Kamaladi,Kathmandu,Nepal',
+    value: 'Manokamana Hire Purchase Pvt. Ltd., Kathmandu',
+    href: 'https://www.google.com/maps/place/Manakamana+Hire+Purchase+Pvt+Ltd/@27.7108334,85.31344,17z',
   },
 ]
 
 const mapSrc =
-  'https://maps.google.com/maps?q=MV%20Dugar%20Group%2C%20Kamaladi%2C%20Kathmandu&z=16&output=embed'
-const directionsHref = 'https://maps.google.com/?q=MV+Dugar+Group,+Kamaladi,+Kathmandu'
-
-function FacebookIcon(props) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-      <path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4v-8.5z" />
-    </svg>
-  )
-}
-function InstagramIcon(props) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-      <rect x="2" y="2" width="20" height="20" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-    </svg>
-  )
-}
-function LinkedinIcon(props) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-      <path d="M6.94 5a2 2 0 1 1-4-.002 2 2 0 0 1 4 .002zM7 8.48H3V21h4V8.48zm6.32 0H9.34V21h3.94v-6.57c0-3.66 4.77-4 4.77 0V21H22v-7.93c0-6.17-7.06-5.94-8.72-2.91l.04-1.68z" />
-    </svg>
-  )
-}
-
-const socials = [
-  { icon: FacebookIcon, label: 'Facebook', href: '#' },
-  { icon: InstagramIcon, label: 'Instagram', href: '#' },
-  { icon: LinkedinIcon, label: 'LinkedIn', href: '#' },
-]
+  'https://maps.google.com/maps?q=Manakamana%20Hire%20Purchase%20Pvt%20Ltd&ll=27.7108334,85.31344&z=17&output=embed'
+const directionsHref =
+  'https://www.google.com/maps/place/Manakamana+Hire+Purchase+Pvt+Ltd/@27.7108334,85.31344,17z/data=!4m6!3m5!1s0x39eb1936cb09b9c9:0xe2e7a0fb45896ea4!8m2!3d27.7108334!4d85.31344'
 
 function useReveal() {
   const ref = useRef(null)
@@ -207,23 +178,11 @@ export default function Contact() {
                 ))}
               </div>
 
-              {/* Hours + socials */}
-              <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+              {/* Hours */}
+              <div className="mt-6 flex flex-wrap items-center gap-4">
                 <div className="flex items-center gap-2.5 text-sm text-white/60">
                   <Clock className="h-4 w-4 text-brand-400" strokeWidth={2} />
                   Sun to Fri, 9:00 AM to 6:00 PM
-                </div>
-                <div className="flex items-center gap-2.5">
-                  {socials.map((s) => (
-                    <a
-                      key={s.label}
-                      href={s.href}
-                      aria-label={s.label}
-                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white/80 ring-1 ring-white/15 transition-colors hover:bg-brand-500 hover:text-white hover:ring-brand-500"
-                    >
-                      <s.icon className="h-4 w-4" strokeWidth={2} />
-                    </a>
-                  ))}
                 </div>
               </div>
             </div>
@@ -405,7 +364,7 @@ export default function Contact() {
 
           {/* Subtitle */}
           <p className="mx-auto mt-5 max-w-xl text-center text-[15px] leading-relaxed text-gray-500">
-            Visit the MV Dugar Group office in Kamaladi for a face to face consultation.
+            Visit the Manokamana Hire Purchase office in Kathmandu for a face to face consultation.
             Open Sunday to Friday, 9:00 AM to 6:00 PM.
           </p>
 
@@ -447,7 +406,7 @@ export default function Contact() {
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-900/55 via-transparent to-transparent" />
               <div className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-white/90 px-3.5 py-2 text-xs font-semibold text-navy-700 shadow-sm backdrop-blur">
                 <MapPin className="h-4 w-4 text-brand-500" strokeWidth={2.2} />
-                MV Dugar Group, Kamaladi
+                Manokamana Hire Purchase, Kathmandu
               </div>
             </div>
 
@@ -506,7 +465,7 @@ export default function Contact() {
 /* ── Helpers ───────────────────────────────────────────────────── */
 
 const inputClass =
-  'w-full rounded-xl border border-gray-200 bg-gray-50/70 px-4 py-3 text-[15px] text-gray-900 placeholder:text-gray-400 outline-none transition-all duration-200 focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10'
+  'w-full rounded-xl border border-gray-200 bg-gray-50/70 px-4 py-3 text-[15px] text-gray-900 placeholder:text-gray-400 outline-none transition-all duration-200 focus:border-brand-500 focus:bg-white'
 
 function Field({ label, htmlFor, children }) {
   return (
