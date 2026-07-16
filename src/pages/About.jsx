@@ -48,9 +48,9 @@ function Reveal({ children, className = '', delay = 0 }) {
 /* ── Data ──────────────────────────────────────────────────────── */
 
 const stats = [
-  { value: 'Est. 2081', unit: 'BS', label: 'A young company, an old promise' },
-  { value: '5', unit: 'sectors', label: 'From two-wheelers to heavy equipment' },
-  { value: '1', unit: 'day', label: 'Typical reply time on every enquiry' },
+  { value: 'Est. 2076', unit: 'BS', label: 'A young company, an old promise' },
+  { value: 'Multi', unit: 'sectors', label: 'Two-wheelers, cars, commercial and heavy equipment' },
+  { value: 'Within a', unit: 'day', label: 'Typical reply time on every enquiry' },
   { value: '100%', unit: 'Nepali', label: 'Owned, staffed, and rooted in Kathmandu' },
 ]
 
@@ -118,8 +118,8 @@ export default function About() {
               automotive customers. Over the years, it has been providing
               multi-brand finance to thousands of low-income customers, financing
               the purchase of vehicles for self-employment purposes among
-              underprivileged groups to uplift their livelihood, farmers, and
-              customers who are unable to easily obtain loans from banks and
+              underprivileged groups to uplift their livelihood, farmers, contractors, transporters and
+              businessmen who are unable to easily obtain loans from banks and
               financial institutions.
             </p>
 
@@ -172,28 +172,64 @@ export default function About() {
           </div>
         </div>
 
-        {/* Stats row */}
-        <div className="relative mx-auto mt-16 max-w-6xl lg:mt-24">
-          <div className="grid border-t border-navy-900/10 sm:grid-cols-2 lg:grid-cols-4">
-            {stats.map((s, i) => (
-              <Reveal
-                key={s.label}
-                delay={i * 80}
-                className="border-b border-navy-900/10 py-7 pr-6 sm:border-b-0 sm:border-r sm:px-8 sm:first:pl-0 sm:last:border-r-0 sm:last:pr-0"
-              >
-                <p className="font-display text-4xl font-extrabold tracking-tight text-navy-900">
-                  {s.value}
-                  <span className="ml-1.5 text-sm font-bold uppercase tracking-wide text-brand-500">
-                    {s.unit}
-                  </span>
-                </p>
-                <p className="mt-2.5 max-w-[24ch] text-sm leading-relaxed text-navy-900/50">
-                  {s.label}
-                </p>
-              </Reveal>
-            ))}
-          </div>
+      </section>
+
+      {/* ══ Stats ledger — bridges hero into the navy section ═══ */}
+      <section className="relative bg-[#fdfdfb] px-6 sm:px-10">
+        {/* Bottom half navy, so the card straddles the seam */}
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-navy-900">
+          <div
+            className="absolute inset-0 opacity-[0.06]"
+            style={{ backgroundImage: grain }}
+          />
         </div>
+
+        <Reveal className="relative mx-auto max-w-6xl">
+          <div className="relative rounded-2xl border border-navy-900/10 bg-white shadow-[0_36px_90px_-28px_rgba(10,28,52,0.45)]">
+            <div
+              className="pointer-events-none absolute inset-0 rounded-2xl opacity-[0.04]"
+              style={{ backgroundImage: grain }}
+            />
+
+            {/* File-tab label */}
+            <span className="absolute -top-3.5 left-7 inline-flex items-center gap-2 rounded-full bg-navy-900 px-4 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.25em] text-white sm:left-9">
+              <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
+              At a glance
+            </span>
+
+            <div className="relative grid sm:grid-cols-2 lg:grid-cols-4">
+              {stats.map((s, i) => (
+                <Reveal
+                  key={s.label}
+                  delay={100 + i * 70}
+                  className={`group border-dashed border-navy-900/15 px-7 py-8 sm:px-9 lg:px-8 xl:px-9 ${
+                    i < 3 ? 'border-b' : ''
+                  } ${i === 2 ? 'sm:border-b-0' : ''} ${
+                    i < 2 ? 'lg:border-b-0' : ''
+                  } ${i % 2 === 1 ? 'sm:border-l' : ''} ${
+                    i > 0 ? 'lg:border-l' : ''
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[11px] font-semibold tracking-[0.2em] text-navy-900/35">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span className="h-px w-6 bg-brand-500/50 transition-all duration-300 group-hover:w-10 group-hover:bg-brand-500" />
+                  </div>
+                  <p className="mt-5 font-display text-[2.15rem] font-extrabold leading-none tracking-tight text-navy-900">
+                    {s.value}
+                  </p>
+                  <p className="mt-2 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-brand-600">
+                    {s.unit}
+                  </p>
+                  <p className="mt-3.5 max-w-[24ch] text-sm leading-relaxed text-navy-900/55">
+                    {s.label}
+                  </p>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </Reveal>
       </section>
 
       {/* ══ Navy ledger — stats + Dugar backing ═════════════════ */}
