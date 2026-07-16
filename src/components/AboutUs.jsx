@@ -45,7 +45,7 @@ export default function AboutUs() {
                 <span className="flex h-9 w-9 items-center justify-center rounded-full">
                   <Phone className="h-5 w-5 text-white" />
                 </span>
-                <span className="text-lg font-semibold">+977-1-800-256-258</span>
+                <span className="text-lg font-semibold">01-4163533</span>
               </div>
             </div>
             {/* Image */}
