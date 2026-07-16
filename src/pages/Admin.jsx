@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
   FileText,
   Newspaper,
@@ -11,10 +12,17 @@ import {
   Loader2,
   CheckCircle2,
   Star,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  ArrowLeft,
+  ShieldCheck,
 } from 'lucide-react'
 import { api, getToken, setToken, clearToken } from '../lib/api'
 import { PERIODS } from '../lib/reportStore'
 import manokamanaLogo from '../assets/images/manokamana-logo.png'
+import loginBackdrop from '../assets/images/zaxis-140h-ultra.webp'
 import vivekImg from '../assets/images/vivek-dugar.webp'
 import sarojImg from '../assets/images/saroj-bhattarai.jpeg'
 import rajeshwarImg from '../assets/images/rajeshwar-neupane.jpeg'
@@ -92,8 +100,12 @@ function useNotice() {
 
 function Login({ onDone }) {
   const [password, setPassword] = useState('')
+  const [show, setShow] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [capsOn, setCapsOn] = useState(false)
+
+  const checkCaps = (e) => setCapsOn(e.getModifierState?.('CapsLock') ?? false)
 
   async function submit(e) {
     e.preventDefault()
@@ -110,36 +122,258 @@ function Login({ onDone }) {
     }
   }
 
+  const areas = [
+    { icon: FileText, label: 'Financial reports', blurb: 'Quarterly and annual disclosures' },
+    { icon: Newspaper, label: 'Blog posts', blurb: 'News, guides and notices' },
+    { icon: Users, label: 'Team roster', blurb: 'Board and management profiles' },
+    { icon: Briefcase, label: 'Job openings', blurb: 'Careers page listings' },
+  ]
+
   return (
-    <section className="flex min-h-screen items-center justify-center bg-[#fdfdfb] px-6">
-      <form
-        onSubmit={submit}
-        className="w-full max-w-sm rounded-3xl border border-black/5 bg-white p-8 shadow-[0_24px_60px_-30px_rgba(10,28,52,0.3)]"
-      >
+    <section className="relative min-h-dvh lg:grid lg:grid-cols-[1.1fr_1fr]">
+      {/* Red seal seam with traveling sheen, across the whole viewport */}
+      <div
+        className="animate-seam absolute inset-x-0 top-0 z-20 h-1"
+        style={{
+          backgroundImage:
+            'linear-gradient(90deg, #a10f13, #e11b22 45%, #ff6b6f 50%, #e11b22 55%, #a10f13)',
+          backgroundSize: '220% 100%',
+        }}
+      />
+
+      {/* ── Brand panel (desktop) ────────────────────────────────── */}
+      <aside className="relative hidden overflow-hidden bg-navy-900 lg:flex lg:flex-col lg:justify-between lg:p-12">
+        {/* Machinery backdrop, duotoned into the navy */}
         <img
-          src={manokamanaLogo}
-          alt="Manokamana Hire Purchase"
-          className="h-10 w-auto object-contain"
+          src={loginBackdrop}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover opacity-[0.16] grayscale"
         />
-        <h1 className="mt-5 font-display text-2xl font-extrabold tracking-tight text-navy-900">
-          Admin sign-in
-        </h1>
-        <div className="mt-6">
-          <Field label="Password">
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={inputCls}
-              autoFocus
-            />
-          </Field>
+        <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-navy-900/60 to-navy-900/30" />
+        {/* Faint blueprint grid */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)',
+            backgroundSize: '44px 44px',
+          }}
+        />
+        {/* Top: brand */}
+        <div className="animate-fade-up relative z-10 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white p-1.5 shadow-lg">
+              <img src={manokamanaLogo} alt="Manokamana Hire Purchase" className="h-full w-full object-contain" />
+            </span>
+            <span>
+              <span className="block font-display text-base font-extrabold leading-tight text-white">
+                Manokamana
+              </span>
+              <span className="block text-[11px] font-semibold text-white/50">
+                Hire Purchase Pvt. Ltd.
+              </span>
+            </span>
+          </div>
+          <Link
+            to="/"
+            className="group inline-flex items-center gap-1.5 rounded-full border border-white/15 px-4 py-2 text-xs font-semibold text-white/70 transition-colors hover:border-white/30 hover:text-white"
+          >
+            <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+            Back to the website
+          </Link>
         </div>
-        {error && <p className="mt-3 text-sm font-semibold text-red-600">{error}</p>}
-        <Button type="submit" busy={busy} className="mt-6 w-full">
-          Sign in
-        </Button>
-      </form>
+
+        {/* Bottom: what this console does */}
+        <div className="relative z-10">
+          <p
+            className="animate-fade-up text-[11px] font-bold uppercase tracking-[0.24em] text-brand-400"
+            style={{ animationDelay: '120ms' }}
+          >
+            Admin console
+          </p>
+          <h2
+            className="animate-fade-up mt-3 max-w-md font-display text-4xl font-extrabold leading-[1.08] tracking-tight text-white"
+            style={{ animationDelay: '180ms', textWrap: 'balance' }}
+          >
+            Everything the site publishes, managed from one desk.
+          </h2>
+
+          <ul className="mt-10 grid max-w-md grid-cols-2 gap-x-6 gap-y-5">
+            {areas.map(({ icon: Icon, label, blurb }, i) => (
+              <li
+                key={label}
+                className="animate-fade-up flex items-start gap-3"
+                style={{ animationDelay: `${260 + i * 70}ms` }}
+              >
+                <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/[0.07] ring-1 ring-white/10">
+                  <Icon className="h-4 w-4 text-brand-400" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-sm font-semibold text-white">{label}</span>
+                  <span className="block text-xs leading-snug text-white/45">{blurb}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <p
+            className="animate-fade-up mt-12 flex items-center gap-2 border-t border-white/10 pt-6 text-[11px] font-medium text-white/35"
+            style={{ animationDelay: '560ms' }}
+          >
+            <Lock className="h-3 w-3" />
+            Authorized personnel only · Encrypted session
+          </p>
+        </div>
+      </aside>
+
+      {/* ── Sign-in form: "access pass" ticket ───────────────────── */}
+      <main className="relative flex min-h-dvh items-center justify-center bg-[#fdfdfb] px-6 py-16">
+        {/* Faint dot texture so the column isn't dead flat */}
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'radial-gradient(rgba(10,28,52,0.05) 1px, transparent 1px)',
+            backgroundSize: '22px 22px',
+          }}
+        />
+
+        <div className="relative w-full max-w-[400px]">
+          {/* Mobile-only brand row (the aside carries it on desktop) */}
+          <div className="animate-fade-up mb-8 flex items-center justify-between lg:hidden">
+            <img src={manokamanaLogo} alt="Manokamana Hire Purchase" className="h-10 w-auto object-contain" />
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-navy-900/50 transition-colors hover:text-navy-900"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Back to the website
+            </Link>
+          </div>
+
+          <form
+            onSubmit={submit}
+            className="animate-fade-up relative rounded-[22px] bg-white shadow-[0_36px_80px_-40px_rgba(10,28,52,0.4)] ring-1 ring-navy-900/10"
+            style={{ animationDelay: '80ms' }}
+          >
+            {/* Pass header */}
+            <div className="flex items-center justify-between px-7 pb-5 pt-6">
+              <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.22em] text-navy-900/55">
+                <ShieldCheck className="h-4 w-4 text-brand-500" />
+                Access pass
+              </span>
+              <span className="rounded-md bg-navy-900 px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-white">
+                Admin
+              </span>
+            </div>
+
+            {/* Perforation */}
+            <div aria-hidden className="relative">
+              <div className="mx-6 border-t-2 border-dashed border-navy-900/10" />
+              <span className="absolute -left-2 top-1/2 h-4 w-4 -translate-y-1/2 rounded-full bg-[#fdfdfb]" />
+              <span className="absolute -right-2 top-1/2 h-4 w-4 -translate-y-1/2 rounded-full bg-[#fdfdfb]" />
+            </div>
+
+            {/* Pass body */}
+            <div className="px-7 py-7">
+              <h1 className="font-display text-[34px] font-extrabold leading-none tracking-tight text-navy-900">
+                Sign in<span className="text-brand-500">.</span>
+              </h1>
+              <p className="mt-2.5 text-sm leading-relaxed text-navy-900/55">
+                Enter the admin password to manage reports, posts and the team roster.
+              </p>
+
+              {/* Password field */}
+              <div className="mt-6">
+                <span className={labelCls}>Password</span>
+                <div className="group relative mt-2">
+                  <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-navy-900/35 transition-colors group-focus-within:text-navy-900/70" />
+                  <input
+                    type={show ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onKeyDown={checkCaps}
+                    onKeyUp={checkCaps}
+                    onBlur={() => setCapsOn(false)}
+                    className="w-full rounded-xl border border-navy-900/15 bg-navy-900/[0.02] py-3.5 pl-10 pr-11 text-sm text-navy-900 outline-none transition-colors placeholder:text-navy-900/30 focus:border-navy-900/40 focus:bg-white focus:ring-4 focus:ring-navy-900/5"
+                    placeholder="••••••••••"
+                    autoFocus
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShow((s) => !s)}
+                    tabIndex={-1}
+                    aria-label={show ? 'Hide password' : 'Show password'}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-navy-900/40 transition-colors hover:bg-navy-900/5 hover:text-navy-900/70"
+                  >
+                    {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+
+              {capsOn && !error && (
+                <p className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-navy-900/60">
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber-400" />
+                  Caps Lock is on
+                </p>
+              )}
+              {error && (
+                <p className="mt-3 flex items-center gap-1.5 text-sm font-semibold text-brand-600">
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-brand-500" />
+                  {error}
+                </p>
+              )}
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={busy}
+                className="group mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-6 py-3.5 text-sm font-bold text-white shadow-[0_14px_30px_-12px_rgba(225,27,34,0.7)] transition-all hover:-translate-y-0.5 hover:bg-brand-600 hover:shadow-[0_20px_40px_-14px_rgba(225,27,34,0.75)] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+              >
+                {busy ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" /> Verifying…
+                  </>
+                ) : (
+                  <>
+                    Sign in
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Perforation */}
+            <div aria-hidden className="relative">
+              <div className="mx-6 border-t-2 border-dashed border-navy-900/10" />
+              <span className="absolute -left-2 top-1/2 h-4 w-4 -translate-y-1/2 rounded-full bg-[#fdfdfb]" />
+              <span className="absolute -right-2 top-1/2 h-4 w-4 -translate-y-1/2 rounded-full bg-[#fdfdfb]" />
+            </div>
+
+            {/* Ticket stub */}
+            <div className="flex items-center justify-between gap-4 px-7 pb-6 pt-5">
+              <div aria-hidden className="barcode h-7 w-32 text-navy-900/70" />
+              <div className="text-right">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-navy-900/55">
+                  MHP · Admin console
+                </p>
+                <p className="mt-0.5 text-[10px] text-navy-900/40">Kamaladi, Kathmandu</p>
+              </div>
+            </div>
+          </form>
+
+          {/* Under the pass */}
+          <div className="animate-fade-up mt-6 space-y-1.5 text-center" style={{ animationDelay: '300ms' }}>
+            <p className="flex items-center justify-center gap-2 text-[11px] font-medium text-navy-900/40">
+              <Lock className="h-3 w-3" />
+              Authorized personnel only · Encrypted session
+            </p>
+            <p className="text-xs text-navy-900/45">
+              Forgot the password? Ask the site maintainer to reset it.
+            </p>
+          </div>
+        </div>
+      </main>
     </section>
   )
 }

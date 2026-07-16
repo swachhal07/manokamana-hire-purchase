@@ -16,12 +16,12 @@ import Eyebrow from '../components/Eyebrow'
 import brandImage from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.jpg'
 import consultImage from '../assets/images/vitaly-gariev-0kWem6X0Mc8-unsplash.jpg'
 
-// Web3Forms access key (https://web3forms.com). Submissions are delivered to
-// the email the key was created for (info@manokamanahirepurchase.com.np).
-// This key is safe to keep in client code — it only lets people send to that
-// inbox, nothing else. An env var, if set, overrides it.
-const WEB3FORMS_KEY =
-  import.meta.env.VITE_WEB3FORMS_KEY || '7728a5c7-8452-4229-8523-48c577d0cecb'
+// Web3Forms access key (https://web3forms.com). Comes from VITE_WEB3FORMS_KEY,
+// set in .env.local (dev) and in the host's environment (prod). It ships in the
+// client bundle by nature, so it must NOT be committed as a hardcoded fallback:
+// harden it in the Web3Forms dashboard (allowed-domains + hCaptcha) to prevent
+// abuse. If the var is unset the form is disabled and shows a fallback message.
+const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY || ''
 
 const grain =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"

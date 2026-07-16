@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { load, save } from '../lib/store.js'
 import { requireAdmin } from '../middleware/auth.js'
-import { upload } from '../middleware/upload.js'
+import { uploadImage } from '../middleware/upload.js'
 import { uploadBuffer, deleteAsset } from '../config/cloudinary.js'
 
 const router = Router()
@@ -41,7 +41,7 @@ router.get('/', async (_req, res, next) => {
  * PUT /api/team/:section/:index — admin.
  * :section is `board` or `management`; multipart: name, role, bio, optional `image`.
  */
-router.put('/:section/:index', requireAdmin, upload.single('image'), async (req, res, next) => {
+router.put('/:section/:index', requireAdmin, uploadImage.single('image'), async (req, res, next) => {
   try {
     const { section, index } = req.params
     if (!SECTIONS.includes(section)) {
@@ -72,7 +72,7 @@ router.put('/:section/:index', requireAdmin, upload.single('image'), async (req,
 })
 
 /** POST /api/team/:section — admin. Add a member. */
-router.post('/:section', requireAdmin, upload.single('image'), async (req, res, next) => {
+router.post('/:section', requireAdmin, uploadImage.single('image'), async (req, res, next) => {
   try {
     const { section } = req.params
     if (!SECTIONS.includes(section)) {

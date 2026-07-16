@@ -10,22 +10,21 @@ import imgTwoWheeler from '../assets/images/rv-4006491267651bec.avif'
 import imgCommercial from '../assets/images/70_kmph_top_speed.jpg'
 import imgAgriculture from '../assets/images/photo-1594771804886-a933bb2d609b.avif'
 import imgConstruction from '../assets/images/sinharai power.jpg'
-import imgIndustrial from '../assets/images/photo-1647427060118-4911c9821b82.avif'
 
 const offers = [
-  {
-    name: 'Passenger Vehicles',
-    heading: 'Drive home your dream car',
-    desc: 'Own a new or used car, SUV, or electric vehicle with quick approvals and flexible terms.',
-    items: ['New cars', 'Used cars', 'SUVs', 'Electric vehicles'],
-    image: imgPassenger,
-  },
   {
     name: 'Two-Wheelers',
     heading: 'Ride now, pay with ease',
     desc: 'Finance motorcycles, scooters, and electric two-wheelers with affordable installments.',
     items: ['Motorcycles', 'Scooters', 'Electric bikes'],
     image: imgTwoWheeler,
+  },
+  {
+    name: 'Passenger Vehicles',
+    heading: 'Drive home your dream car',
+    desc: 'Own a new or used car, SUV, or electric vehicle with quick approvals and flexible terms.',
+    items: ['New cars', 'Used cars', 'SUVs', 'Electric vehicles'],
+    image: imgPassenger,
   },
   {
     name: 'Commercial Vehicles',
@@ -47,13 +46,6 @@ const offers = [
     desc: 'Fund excavators, heavy machinery, and construction equipment to power your projects.',
     items: ['Excavators', 'Heavy machinery', 'Construction equipment'],
     image: imgConstruction,
-  },
-  {
-    name: 'Industrial Machinery',
-    heading: 'Power your production line',
-    desc: 'Finance factory machinery, generators, and processing equipment to scale up output.',
-    items: ['Factory machinery', 'Generators', 'Processing units'],
-    image: imgIndustrial,
   },
 ]
 

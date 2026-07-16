@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { gsap } from 'gsap'
-import bg1 from '../assets/images/vitaly-gariev-0kWem6X0Mc8-unsplash.jpg'
-import bg2 from '../assets/images/vitaly-gariev-LS5dCL0NkhE-unsplash.jpg'
-import bg3 from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.jpg'
-import bg4 from '../assets/images/photo-1628348068343-c6a848d2b6dd.avif'
+import bg1 from '../assets/images/zaxis-140h-ultra.webp'
+import bg2 from '../assets/images/john-deere-tractor-and-harvesters-8vy92xu1qcrorfub.jpg'
+import bg3 from '../assets/images/current-offer1.webp'
+import bg4 from '../assets/images/70_kmph_top_speed.jpg'
 import Marquee from './Marquee'
 
 const backgrounds = [bg1, bg2, bg3, bg4]
@@ -86,12 +86,23 @@ export default function Hero() {
       {/* Content */}
       <div className="relative mx-auto flex min-h-screen max-w-[1600px] flex-col justify-center px-6 lg:px-10">
         <div ref={contentRef} className="max-w-2xl">
+          <span className="hero-anim mb-7 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white/90 backdrop-blur">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
+            Licensed by Nepal Rastra Bank
+          </span>
+
           <h1 className="hero-anim text-5xl font-semibold leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl">
             Drive Your
             <span className="ml-5 inline-block h-px w-24 bg-brand-500 align-middle sm:w-32" />
             <br />
             Dreams Forward
           </h1>
+
+          <p className="hero-anim mt-6 max-w-lg text-base leading-relaxed text-white/75 sm:text-lg">
+            Vehicle hire purchase financing for two-wheelers, cars, commercial
+            vehicles and heavy equipment fast approvals and clear terms for
+            buyers across Nepal.
+          </p>
 
           <div className="hero-anim mt-10 flex items-center gap-2">
             <Link

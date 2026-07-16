@@ -4,6 +4,14 @@ import { MapPin, Clock, ArrowUpRight } from 'lucide-react'
 import Eyebrow from '../components/Eyebrow'
 import { getOpenings } from '../lib/careerStore'
 import heroImage from '../assets/images/70_kmph_top_speed.jpg'
+import heroExcavator from '../assets/images/650h zaxis.webp'
+import heroTractor from '../assets/images/john-deere-tractor-and-harvesters-8vy92xu1qcrorfub.jpg'
+
+const heroSlides = [
+  { src: heroImage, alt: 'Mahindra Supro — the vehicles we help finance' },
+  { src: heroExcavator, alt: 'ZAXIS excavator we help finance' },
+  { src: heroTractor, alt: 'John Deere tractor and harvesters we help finance' },
+]
 
 const grain =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
@@ -48,6 +56,7 @@ function Reveal({ children, className = '', delay = 0 }) {
 
 export default function Careers() {
   const [openings, setOpenings] = useState([])
+  const [slide, setSlide] = useState(0)
 
   useEffect(() => {
     let alive = true
@@ -55,6 +64,15 @@ export default function Careers() {
     return () => {
       alive = false
     }
+  }, [])
+
+  // Rotate the hero photo through the vehicles we finance
+  useEffect(() => {
+    const id = setInterval(
+      () => setSlide((i) => (i + 1) % heroSlides.length),
+      4000,
+    )
+    return () => clearInterval(id)
   }, [])
 
   return (
@@ -116,12 +134,16 @@ export default function Careers() {
             className="animate-fade-up relative"
             style={{ animationDelay: '170ms' }}
           >
-            <div className="relative overflow-hidden rounded-2xl">
-              <img
-                src={heroImage}
-                alt="Mahindra Supro — the vehicles we help finance"
-                className="h-[380px] w-full object-cover sm:h-[500px]"
-              />
+            <div className="relative h-[380px] overflow-hidden rounded-2xl sm:h-[500px]">
+              {heroSlides.map((s, i) => (
+                <img
+                  key={s.src}
+                  src={s.src}
+                  alt={s.alt}
+                  className="absolute inset-0 h-full w-full object-cover transition-opacity duration-1000"
+                  style={{ opacity: i === slide ? 1 : 0 }}
+                />
+              ))}
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-900/45 via-transparent to-transparent" />
               <div className="absolute right-4 top-4 inline-flex items-center gap-2 rounded-full bg-white/90 px-3.5 py-2 text-xs font-semibold text-navy-700 shadow-sm backdrop-blur">
                 <MapPin className="h-4 w-4 text-brand-500" strokeWidth={2.2} />

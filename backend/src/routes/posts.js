@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { load, save } from '../lib/store.js'
 import { requireAdmin } from '../middleware/auth.js'
-import { upload } from '../middleware/upload.js'
+import { uploadImage } from '../middleware/upload.js'
 import { uploadBuffer, deleteAsset } from '../config/cloudinary.js'
 
 const router = Router()
@@ -55,7 +55,7 @@ router.get('/:slug', async (req, res, next) => {
 })
 
 /** POST /api/posts — admin. multipart: title, category, date, excerpt, body (JSON), optional `image`. */
-router.post('/', requireAdmin, upload.single('image'), async (req, res, next) => {
+router.post('/', requireAdmin, uploadImage.single('image'), async (req, res, next) => {
   try {
     const { title, category = 'Guides', date = '', excerpt = '', featured } = req.body
     const body = parseBody(req.body.body)
@@ -98,7 +98,7 @@ router.post('/', requireAdmin, upload.single('image'), async (req, res, next) =>
 })
 
 /** PUT /api/posts/:slug — admin */
-router.put('/:slug', requireAdmin, upload.single('image'), async (req, res, next) => {
+router.put('/:slug', requireAdmin, uploadImage.single('image'), async (req, res, next) => {
   try {
     const posts = await load(COLLECTION, [])
     const post = posts.find((p) => p.slug === req.params.slug)

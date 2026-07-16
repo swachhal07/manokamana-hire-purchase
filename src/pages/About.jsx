@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
 import Eyebrow from '../components/Eyebrow'
 import dugarLogo from '../assets/images/dugar-logo.png'
-import teamImage from '../assets/images/vitaly-gariev-LS5dCL0NkhE-unsplash.jpg'
-import meetingImage from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.jpg'
+import teamImage from '../assets/images/ChatGPT Image Jul 16, 2026, 08_58_35 PM.png'
 
 const grain =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
@@ -68,7 +67,7 @@ const values = [
   {
     n: '03',
     title: 'Financing that reaches',
-    text: 'Hire purchase should not stop at the Ring Road. We build products for farmers, builders, and riders across Nepal — not just the city.',
+    text: 'Access to a vehicle should not depend on where you live. We reach beyond Kathmandu to finance farmers, builders, and riders in every corner of Nepal.',
   },
   {
     n: '04',
@@ -144,15 +143,15 @@ export default function About() {
             </div>
           </div>
 
-          {/* Right — overlapping photo pair */}
+          {/* Right — feature photo */}
           <div
-            className="animate-fade-up relative pb-14 pl-0 sm:pb-16"
+            className="animate-fade-up relative pl-0"
             style={{ animationDelay: '170ms' }}
           >
             <div className="relative overflow-hidden rounded-2xl">
               <img
                 src={teamImage}
-                alt="The Manokamana team working with customers"
+                alt="The Manokamana leadership team"
                 className="h-[380px] w-full object-cover sm:h-[500px]"
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-900/45 via-transparent to-transparent" />
@@ -160,14 +159,6 @@ export default function About() {
                 <MapPin className="h-4 w-4 text-brand-500" strokeWidth={2.2} />
                 Kamaladi, Kathmandu
               </div>
-            </div>
-            {/* Overlap photo */}
-            <div className="absolute -bottom-0 -left-4 hidden w-52 overflow-hidden rounded-xl border-[5px] border-[#fdfdfb] shadow-[0_24px_50px_-16px_rgba(10,28,52,0.35)] sm:block lg:-left-10 lg:w-64">
-              <img
-                src={meetingImage}
-                alt="An advisor meeting a customer"
-                className="h-40 w-full object-cover lg:h-48"
-              />
             </div>
           </div>
         </div>

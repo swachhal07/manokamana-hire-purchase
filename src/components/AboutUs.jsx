@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
 import { Phone, Handshake, Wallet, Zap, ChevronUp, ArrowRight } from 'lucide-react'
-import img1 from '../assets/images/vitaly-gariev-0kWem6X0Mc8-unsplash.jpg'
-import img2 from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.jpg'
-import img3 from '../assets/images/vitaly-gariev-LS5dCL0NkhE-unsplash.jpg'
+import img1 from '../assets/images/650h zaxis.webp'
+import img2 from '../assets/images/john-deere-tractor-and-harvesters-8vy92xu1qcrorfub.jpg'
+import img3 from '../assets/images/wp9212100.jpg'
 
 const features = [
   {
@@ -51,7 +51,7 @@ export default function AboutUs() {
             {/* Image */}
             <img
               src={img2}
-              alt="Our team helping a customer"
+              alt="John Deere tractor and harvesters we finance"
               className="min-h-[20rem] w-full flex-1 rounded-3xl object-cover shadow-lg"
             />
           </div>
@@ -61,7 +61,7 @@ export default function AboutUs() {
             {/* Portrait image */}
             <img
               src={img1}
-              alt="Client consultation"
+              alt="ZAXIS excavator we finance"
               className="h-96 w-full rounded-3xl object-cover shadow-lg lg:h-[30rem]"
             />
             {/* Info card over image */}

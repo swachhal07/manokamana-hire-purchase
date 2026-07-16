@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { load, save, newId } from '../lib/store.js'
 import { requireAdmin } from '../middleware/auth.js'
-import { upload } from '../middleware/upload.js'
+import { uploadPdf } from '../middleware/upload.js'
 import { uploadBuffer, deleteAsset } from '../config/cloudinary.js'
 
 const router = Router()
@@ -24,7 +24,7 @@ router.get('/', async (_req, res, next) => {
 })
 
 /** POST /api/reports — admin. multipart: fields + optional `file` (PDF). */
-router.post('/', requireAdmin, upload.single('file'), async (req, res, next) => {
+router.post('/', requireAdmin, uploadPdf.single('file'), async (req, res, next) => {
   try {
     const { title, year, period, notes = '', publishedAt } = req.body
     if (!title || !year || !PERIODS.includes(period)) {
@@ -61,7 +61,7 @@ router.post('/', requireAdmin, upload.single('file'), async (req, res, next) => 
 })
 
 /** PUT /api/reports/:id — admin. Same fields; new `file` replaces the old one. */
-router.put('/:id', requireAdmin, upload.single('file'), async (req, res, next) => {
+router.put('/:id', requireAdmin, uploadPdf.single('file'), async (req, res, next) => {
   try {
     const reports = await load(COLLECTION, [])
     const report = reports.find((r) => r.id === req.params.id)
