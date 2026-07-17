@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
 import { Phone, Handshake, Wallet, Zap, ChevronUp, ArrowRight } from 'lucide-react'
 import img1 from '../assets/images/650h zaxis.webp'
-import img2 from '../assets/images/john-deere-tractor-and-harvesters-8vy92xu1qcrorfub.jpg'
-import img3 from '../assets/images/wp9212100.jpg'
+import img2 from '../assets/images/john-deere-tractor-and-harvesters-8vy92xu1qcrorfub.webp'
+import img3 from '../assets/images/wp9212100.webp'
 
 const features = [
   {

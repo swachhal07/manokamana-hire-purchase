@@ -2,9 +2,9 @@ import { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { gsap } from 'gsap'
 import bg1 from '../assets/images/zaxis-140h-ultra.webp'
-import bg2 from '../assets/images/john-deere-tractor-and-harvesters-8vy92xu1qcrorfub.jpg'
+import bg2 from '../assets/images/john-deere-tractor-and-harvesters-8vy92xu1qcrorfub.webp'
 import bg3 from '../assets/images/current-offer1.webp'
-import bg4 from '../assets/images/70_kmph_top_speed.jpg'
+import bg4 from '../assets/images/70_kmph_top_speed.webp'
 import Marquee from './Marquee'
 
 const backgrounds = [bg1, bg2, bg3, bg4]

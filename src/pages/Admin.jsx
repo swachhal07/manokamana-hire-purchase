@@ -26,10 +26,10 @@ import loginBackdrop from '../assets/images/zaxis-140h-ultra.webp'
 import vivekImg from '../assets/images/vivek-dugar.webp'
 import sarojImg from '../assets/images/saroj-bhattarai.jpeg'
 import rajeshwarImg from '../assets/images/rajeshwar-neupane.jpeg'
-import mgmt1 from '../assets/images/vitaly-gariev-0kWem6X0Mc8-unsplash.jpg'
-import mgmt2 from '../assets/images/vitaly-gariev-LS5dCL0NkhE-unsplash.jpg'
-import mgmt3 from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.jpg'
-import mgmt4 from '../assets/images/photo-1628348068343-c6a848d2b6dd.avif'
+import mgmt1 from '../assets/images/vitaly-gariev-0kWem6X0Mc8-unsplash.webp'
+import mgmt2 from '../assets/images/vitaly-gariev-LS5dCL0NkhE-unsplash.webp'
+import mgmt3 from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.webp'
+import mgmt4 from '../assets/images/photo-1628348068343-c6a848d2b6dd.webp'
 
 // Same bundled portraits the public Leadership page falls back to, so the
 // admin cards preview what the site actually shows until a photo is uploaded.

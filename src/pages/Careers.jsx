@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from 'react'
 import { MapPin, Clock, ArrowUpRight } from 'lucide-react'
 import Eyebrow from '../components/Eyebrow'
 import { getOpenings } from '../lib/careerStore'
-import heroImage from '../assets/images/70_kmph_top_speed.jpg'
+import heroImage from '../assets/images/70_kmph_top_speed.webp'
 import heroExcavator from '../assets/images/650h zaxis.webp'
-import heroTractor from '../assets/images/john-deere-tractor-and-harvesters-8vy92xu1qcrorfub.jpg'
+import heroTractor from '../assets/images/john-deere-tractor-and-harvesters-8vy92xu1qcrorfub.webp'
 
 const heroSlides = [
   { src: heroImage, alt: 'Mahindra Supro — the vehicles we help finance' },

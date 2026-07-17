@@ -4,7 +4,7 @@ import { ArrowRight, Check } from 'lucide-react'
 import Eyebrow from '../components/Eyebrow'
 import imgPassenger from '../assets/images/photo-1612057473166-af2affdb92ad.avif'
 import imgTwoWheeler from '../assets/images/rv-4006491267651bec.avif'
-import imgCommercial from '../assets/images/70_kmph_top_speed.jpg'
+import imgCommercial from '../assets/images/70_kmph_top_speed.webp'
 import imgAgriculture from '../assets/images/photo-1594771804886-a933bb2d609b.avif'
 import imgConstruction from '../assets/images/sinharai power.jpg'
 
@@ -15,20 +15,20 @@ const grain =
 
 const services = [
   {
-    slug: 'passenger-vehicles',
-    name: 'Passenger Vehicles',
-    tagline: 'Drive home your dream car',
-    desc: 'Own a new or used car, SUV, or electric vehicle with quick approvals and flexible terms.',
-    covers: ['New cars', 'Used cars', 'SUVs', 'Electric vehicles'],
-    image: imgPassenger,
-  },
-  {
     slug: 'two-wheelers',
     name: 'Two-Wheelers',
     tagline: 'Ride now, pay with ease',
     desc: 'Finance motorcycles, scooters, and electric two-wheelers with affordable installments.',
     covers: ['Motorcycles', 'Scooters', 'Electric bikes'],
     image: imgTwoWheeler,
+  },
+  {
+    slug: 'passenger-vehicles',
+    name: 'Passenger Vehicles',
+    tagline: 'Drive home your dream car',
+    desc: 'Own a new or used car, SUV, or electric vehicle with quick approvals and flexible terms.',
+    covers: ['New cars', 'Used cars', 'SUVs', 'Electric vehicles'],
+    image: imgPassenger,
   },
   {
     slug: 'commercial-vehicles',

@@ -13,8 +13,8 @@ import {
   Navigation,
 } from 'lucide-react'
 import Eyebrow from '../components/Eyebrow'
-import brandImage from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.jpg'
-import consultImage from '../assets/images/vitaly-gariev-0kWem6X0Mc8-unsplash.jpg'
+import brandImage from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.webp'
+import consultImage from '../assets/images/vitaly-gariev-0kWem6X0Mc8-unsplash.webp'
 
 // Web3Forms access key (https://web3forms.com). Comes from VITE_WEB3FORMS_KEY,
 // set in .env.local (dev) and in the host's environment (prod). It ships in the
@@ -59,7 +59,7 @@ const channels = [
 ]
 
 const mapSrc =
-  'https://maps.google.com/maps?q=Manakamana%20Hire%20Purchase%20Pvt%20Ltd&ll=27.7108334,85.31344&z=17&output=embed'
+  'https://www.google.com/maps?q=27.7108334,85.31344&z=17&hl=en&output=embed'
 const directionsHref =
   'https://www.google.com/maps/place/Manakamana+Hire+Purchase+Pvt+Ltd/@27.7108334,85.31344,17z/data=!4m6!3m5!1s0x39eb1936cb09b9c9:0xe2e7a0fb45896ea4!8m2!3d27.7108334!4d85.31344'
 

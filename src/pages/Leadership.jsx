@@ -1,22 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
+import { User } from 'lucide-react'
 import { api } from '../lib/api'
 import Eyebrow from '../components/Eyebrow'
 import vivekImg from '../assets/images/vivek-dugar.webp'
 import sarojImg from '../assets/images/saroj-bhattarai.jpeg'
 import rajeshwarImg from '../assets/images/rajeshwar-neupane.jpeg'
-import mgmt1 from '../assets/images/vitaly-gariev-0kWem6X0Mc8-unsplash.jpg'
-import mgmt2 from '../assets/images/vitaly-gariev-LS5dCL0NkhE-unsplash.jpg'
-import mgmt3 from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.jpg'
-import mgmt4 from '../assets/images/photo-1628348068343-c6a848d2b6dd.avif'
 
 const grain =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
 
 /* ── Data ──────────────────────────────────────────────────────── */
 
-// Bundled portraits used until a photo is uploaded from /admin.
+// Bundled board portraits, used until a photo is uploaded from /admin.
+// Management has no bundled fallback: members without an uploaded photo
+// render a neutral placeholder instead of a stand-in stock photo.
 const boardFallbackImages = [vivekImg, sarojImg, rajeshwarImg]
-const managementFallbackImages = [mgmt1, mgmt2, mgmt3, mgmt4]
 
 const defaultBoard = [
   { name: 'Vivek Dugar', role: 'Chairman', bio: '', image: '' },
@@ -38,6 +36,27 @@ const withFallbacks = (members, fallbacks) =>
     n: String(i + 1).padStart(2, '0'),
     image: m.image || fallbacks[i % fallbacks.length],
   }))
+
+// Like withFallbacks but leaves `image` empty when none is uploaded, so the
+// UI can show a neutral placeholder rather than a stand-in stock photo.
+const withMeta = (members) =>
+  members.map((m, i) => ({ ...m, n: String(i + 1).padStart(2, '0') }))
+
+/* Portrait — real photo when available, neutral placeholder otherwise. */
+function Portrait({ src, alt, className = '' }) {
+  if (src) {
+    return <img src={src} alt={alt} className={`object-cover ${className}`} />
+  }
+  return (
+    <div
+      role="img"
+      aria-label={alt}
+      className={`flex items-center justify-center bg-gradient-to-br from-navy-900/[0.05] via-navy-900/[0.08] to-brand-500/[0.10] ${className}`}
+    >
+      <User className="h-1/4 w-1/4 text-navy-900/25" strokeWidth={1.25} />
+    </div>
+  )
+}
 
 /* ── Scroll reveal ─────────────────────────────────────────────── */
 
@@ -92,7 +111,7 @@ export default function Leadership() {
   }, [])
 
   const leaders = withFallbacks(team.board || [], boardFallbackImages)
-  const management = withFallbacks(team.management || [], managementFallbackImages)
+  const management = withMeta(team.management || [])
 
   return (
     <>
@@ -217,10 +236,10 @@ export default function Leadership() {
                 <Reveal className="group">
                   {/* Portrait */}
                   <div className="relative overflow-hidden rounded-2xl shadow-[0_14px_32px_-20px_rgba(10,28,52,0.35)] transition-all duration-500 ease-out group-hover:-translate-y-1.5 group-hover:shadow-[0_28px_55px_-24px_rgba(10,28,52,0.5)]">
-                    <img
+                    <Portrait
                       src={management[0].image}
                       alt={management[0].name}
-                      className="aspect-[3/4] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+                      className="aspect-[3/4] w-full transition-transform duration-700 ease-out group-hover:scale-[1.06]"
                     />
                     {/* Sheen sweep */}
                     <div
@@ -250,10 +269,10 @@ export default function Leadership() {
                   <Reveal key={`${m.role}-${i}`} delay={i * 80} className="group">
                     {/* Portrait */}
                     <div className="relative overflow-hidden rounded-2xl shadow-[0_14px_32px_-20px_rgba(10,28,52,0.35)] transition-all duration-500 ease-out group-hover:-translate-y-1.5 group-hover:shadow-[0_28px_55px_-24px_rgba(10,28,52,0.5)]">
-                      <img
+                      <Portrait
                         src={m.image}
                         alt={m.name}
-                        className="aspect-[3/4] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+                        className="aspect-[3/4] w-full transition-transform duration-700 ease-out group-hover:scale-[1.06]"
                       />
                       {/* Sheen sweep */}
                       <div
