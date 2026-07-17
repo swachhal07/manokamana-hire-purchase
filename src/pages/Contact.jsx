@@ -58,10 +58,17 @@ const channels = [
   },
 ]
 
+// Official Google Maps "embed" endpoint — served without X-Frame-Options, so
+// it renders inside an iframe. (The older `?output=embed` trick is refused by
+// many browsers, showing a "content blocked" placeholder.) The `!1s<placeId>`
+// segment is the Manokamana Hire Purchase listing, so the map drops a labelled pin.
 const mapSrc =
-  'https://www.google.com/maps?q=27.7108334,85.31344&z=17&hl=en&output=embed'
+  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1765!2d85.31344!3d27.7108334!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1936cb09b9c9%3A0xe2e7a0fb45896ea4!2sManakamana%20Hire%20Purchase%20Pvt%20Ltd!5e0!3m2!1sen!2snp!4v1700000000000!5m2!1sen!2snp'
+// Official Google Maps directions URL — opens turn-by-turn directions to the
+// office (launches the Maps app on mobile). `destination_place_id` labels the
+// destination as the business; the coordinates guarantee the exact location.
 const directionsHref =
-  'https://www.google.com/maps/place/Manakamana+Hire+Purchase+Pvt+Ltd/@27.7108334,85.31344,17z/data=!4m6!3m5!1s0x39eb1936cb09b9c9:0xe2e7a0fb45896ea4!8m2!3d27.7108334!4d85.31344'
+  'https://www.google.com/maps/dir/?api=1&destination=27.7108334%2C85.31344&destination_place_id=0x39eb1936cb09b9c9%3A0xe2e7a0fb45896ea4'
 
 function useReveal() {
   const ref = useRef(null)

@@ -4,7 +4,12 @@ import { api } from '../lib/api'
 import Eyebrow from '../components/Eyebrow'
 import vivekImg from '../assets/images/vivek-dugar.webp'
 import sarojImg from '../assets/images/saroj-bhattarai.jpeg'
-import rajeshwarImg from '../assets/images/rajeshwar-neupane.jpeg'
+import rajeshwarImg from '../assets/images/rajeshwar-neupane.webp'
+import shambhuImg from '../assets/images/shambhu-prasad-subedi.webp'
+import kundanImg from '../assets/images/kundan-khadka.webp'
+import ajitImg from '../assets/images/ajit-mishra.webp'
+import surakshyaImg from '../assets/images/surakshya-niroula.webp'
+import pranilImg from '../assets/images/pranil-sapkota.webp'
 
 const grain =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
@@ -12,8 +17,6 @@ const grain =
 /* ── Data ──────────────────────────────────────────────────────── */
 
 // Bundled board portraits, used until a photo is uploaded from /admin.
-// Management has no bundled fallback: members without an uploaded photo
-// render a neutral placeholder instead of a stand-in stock photo.
 const boardFallbackImages = [vivekImg, sarojImg, rajeshwarImg]
 
 const defaultBoard = [
@@ -22,12 +25,14 @@ const defaultBoard = [
   { name: 'Rajeshwar Neupane', role: 'Director', bio: '', image: '' },
 ]
 
+// Management roster with bundled portraits — served from the frontend so the
+// photos load instantly and don't depend on the backend/Cloudinary.
 const defaultManagement = [
-  { name: 'Full Name', role: 'Chief Executive Officer', bio: '', image: '' },
-  { name: 'Full Name', role: 'General Manager', bio: '', image: '' },
-  { name: 'Full Name', role: 'Head of Finance', bio: '', image: '' },
-  { name: 'Full Name', role: 'Head of Operations', bio: '', image: '' },
-  { name: 'Full Name', role: 'Head of Sales', bio: '', image: '' },
+  { name: 'Shambhu Prasad Subedi', role: 'Chief Executive Officer', bio: '', image: shambhuImg },
+  { name: 'Kundan Khadka', role: 'Chief Risk Officer', bio: '', image: kundanImg },
+  { name: 'Ajit Mishra', role: 'Recovery Head', bio: '', image: ajitImg },
+  { name: 'Surakshya Niroula', role: 'Chief Finance Officer', bio: '', image: surakshyaImg },
+  { name: 'Pranil Sapkota', role: 'Credit Head', bio: '', image: pranilImg },
 ]
 
 const withFallbacks = (members, fallbacks) =>
@@ -111,7 +116,9 @@ export default function Leadership() {
   }, [])
 
   const leaders = withFallbacks(team.board || [], boardFallbackImages)
-  const management = withMeta(team.management || [])
+  // Management is served from the bundled frontend roster (not the backend),
+  // so the real photos always render instantly.
+  const management = withMeta(defaultManagement)
 
   return (
     <>
