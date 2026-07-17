@@ -2,59 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Check } from 'lucide-react'
 import Eyebrow from '../components/Eyebrow'
-import imgPassenger from '../assets/images/photo-1612057473166-af2affdb92ad.avif'
-import imgTwoWheeler from '../assets/images/rv-4006491267651bec.avif'
-import imgCommercial from '../assets/images/70_kmph_top_speed.webp'
-import imgAgriculture from '../assets/images/photo-1594771804886-a933bb2d609b.avif'
-import imgConstruction from '../assets/images/sinharai power.jpg'
+import { services } from '../data/services'
 
 const grain =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
 
 /* ── Data ──────────────────────────────────────────────────────── */
-
-const services = [
-  {
-    slug: 'two-wheelers',
-    name: 'Two-Wheelers',
-    tagline: 'Ride now, pay with ease',
-    desc: 'Finance motorcycles, scooters, and electric two-wheelers with affordable installments.',
-    covers: ['Motorcycles', 'Scooters', 'Electric bikes'],
-    image: imgTwoWheeler,
-  },
-  {
-    slug: 'passenger-vehicles',
-    name: 'Passenger Vehicles',
-    tagline: 'Drive home your dream car',
-    desc: 'Own a new or used car, SUV, or electric vehicle with quick approvals and flexible terms.',
-    covers: ['New cars', 'Used cars', 'SUVs', 'Electric vehicles'],
-    image: imgPassenger,
-  },
-  {
-    slug: 'commercial-vehicles',
-    name: 'Commercial Vehicles',
-    tagline: 'From roads to revenues',
-    desc: 'Accelerate your business with financing for pickup trucks, vans, mini trucks and buses.',
-    covers: ['Pickup trucks', 'Vans', 'Mini trucks', 'Buses'],
-    image: imgCommercial,
-  },
-  {
-    slug: 'agricultural-equipment',
-    name: 'Agricultural Equipment',
-    tagline: 'Grow more, harvest better',
-    desc: 'Finance tractors and farming equipment to boost your agricultural productivity.',
-    covers: ['Tractors', 'Tillers', 'Harvesters'],
-    image: imgAgriculture,
-  },
-  {
-    slug: 'construction-equipment',
-    name: 'Construction Equipment',
-    tagline: 'Build bigger, reach higher',
-    desc: 'Fund excavators, heavy machinery, and construction equipment to power your projects.',
-    covers: ['Excavators', 'Loaders', 'Heavy machinery'],
-    image: imgConstruction,
-  },
-]
 
 const steps = [
   { n: '01', title: 'Enquire', text: 'Tell us what you want to own online, by phone, or at our Kantipath office.' },

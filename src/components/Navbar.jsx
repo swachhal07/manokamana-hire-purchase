@@ -60,9 +60,12 @@ export default function Navbar() {
           : 'border-b border-transparent bg-transparent'
       }`}
     >
-      <nav className="relative mx-auto flex max-w-[1600px] items-center justify-between px-6 py-6 lg:px-10">
-        {/* Logos side by side, separated by a divider */}
-        <Link to="/" className="flex items-center gap-4">
+      <nav className="relative mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-6 py-6 lg:px-10">
+        {/* Logos side by side, separated by a divider.
+            The three regions each take an equal flex-1 share, so the centre nav
+            stays visually centred while its bounds never collide with the logo
+            or the action buttons at any viewport width. */}
+        <Link to="/" className="flex flex-1 items-center gap-4">
           <img
             src={dugarLogo}
             alt="MV Dugar Group"
@@ -79,7 +82,7 @@ export default function Navbar() {
         </Link>
 
         {/* Center nav */}
-        <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-10 lg:flex">
+        <ul className="hidden flex-1 items-center justify-center gap-8 lg:flex xl:gap-10">
           {navItems.map((item) => {
             const className = `flex items-center gap-1.5 text-[17px] font-medium transition-colors ${solid
                 ? 'text-gray-700 hover:text-brand-600'
@@ -134,7 +137,7 @@ export default function Navbar() {
         </ul>
 
         {/* Right actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-1 items-center justify-end gap-3">
           <Link
             to="/contact"
             className="hidden rounded-full bg-brand-500 px-6 py-3 text-[15px] font-semibold text-white shadow-sm transition-colors hover:bg-brand-600 sm:inline-block"

@@ -5,49 +5,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
-import imgPassenger from '../assets/images/photo-1612057473166-af2affdb92ad.avif'
-import imgTwoWheeler from '../assets/images/rv-4006491267651bec.avif'
-import imgCommercial from '../assets/images/70_kmph_top_speed.webp'
-import imgAgriculture from '../assets/images/photo-1594771804886-a933bb2d609b.avif'
-import imgConstruction from '../assets/images/sinharai power.jpg'
-
-const offers = [
-  {
-    name: 'Two-Wheelers',
-    heading: 'Ride now, pay with ease',
-    desc: 'Finance motorcycles, scooters, and electric two-wheelers with affordable installments.',
-    items: ['Motorcycles', 'Scooters', 'Electric bikes'],
-    image: imgTwoWheeler,
-  },
-  {
-    name: 'Passenger Vehicles',
-    heading: 'Drive home your dream car',
-    desc: 'Own a new or used car, SUV, or electric vehicle with quick approvals and flexible terms.',
-    items: ['New cars', 'Used cars', 'SUVs', 'Electric vehicles'],
-    image: imgPassenger,
-  },
-  {
-    name: 'Commercial Vehicles',
-    heading: 'From roads to revenues',
-    desc: 'Accelerate your business with financing for pickup trucks, vans, mini trucks and buses.',
-    items: ['Pickup trucks', 'Vans', 'Mini trucks', 'Buses', 'Heavy commercial'],
-    image: imgCommercial,
-  },
-  {
-    name: 'Agricultural Equipment',
-    heading: 'Grow more, harvest better',
-    desc: 'Finance tractors and farming equipment to boost your agricultural productivity.',
-    items: ['Tractors', 'Farming equipment'],
-    image: imgAgriculture,
-  },
-  {
-    name: 'Construction Equipment',
-    heading: 'Build bigger, reach higher',
-    desc: 'Fund excavators, heavy machinery, and construction equipment to power your projects.',
-    items: ['Excavators', 'Heavy machinery', 'Construction equipment'],
-    image: imgConstruction,
-  },
-]
+import { services as offers } from '../data/services'
 
 const grain =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
@@ -210,11 +168,11 @@ export default function Services() {
                     {offer.name}
                   </p>
                   <h3 className="mt-3 font-display text-3xl font-extrabold leading-[1.02] tracking-tight text-white sm:text-4xl">
-                    {offer.heading}
+                    {offer.tagline}
                   </h3>
                   <p className="mt-3 max-w-md leading-relaxed text-white/70">{offer.desc}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {offer.items.map((item) => (
+                    {offer.covers.map((item) => (
                       <span
                         key={item}
                         className="rounded-full border border-white/25 bg-navy-900/40 px-3 py-1 text-xs font-medium text-white/80"

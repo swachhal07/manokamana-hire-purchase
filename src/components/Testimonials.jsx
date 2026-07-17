@@ -67,6 +67,9 @@ export default function Testimonials() {
             paused ? '[animation-play-state:paused]' : ''
           }`}
         >
+          {/* Reviews are duplicated on purpose: the marquee translates by 50%,
+              so a second identical copy makes the loop seamless (no visible jump
+              when it wraps). This is not an accidental double render. */}
           {[...reviews, ...reviews].map((r, i) => (
             <article
               key={i}

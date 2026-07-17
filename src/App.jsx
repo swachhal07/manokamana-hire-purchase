@@ -11,6 +11,8 @@ import Careers from './pages/Careers'
 import Contact from './pages/Contact'
 import EmiCalculator from './pages/EmiCalculator'
 import Reports from './pages/Reports'
+import Privacy from './pages/Privacy'
+import Terms from './pages/Terms'
 import Admin from './pages/Admin'
 import NotFound from './pages/NotFound'
 
@@ -29,8 +31,9 @@ function App() {
         <Route path="/careers" element={<Careers />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/emi-calculator" element={<EmiCalculator />} />
-        {/* Unlisted financial disclosures — intentionally not linked in the nav */}
         <Route path="/reports" element={<Reports />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
         <Route path="*" element={<NotFound />} />
       </Route>
       {/* Hidden admin dashboard — standalone (no site nav/footer) */}

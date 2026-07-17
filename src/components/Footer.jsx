@@ -4,8 +4,7 @@ import manokamanaLogo from '../assets/images/manokamana-logo.png'
 
 const links = [
   { label: 'Home', to: '/' },
-  { label: 'Services', to: '/' },
-  { label: 'Why Us', to: '/' },
+  { label: 'Services', to: '/services' },
   { label: 'About', to: '/about' },
   { label: 'Careers', to: '/careers' },
   { label: 'Contact', to: '/contact' },
@@ -109,13 +108,13 @@ export default function Footer() {
 
         {/* Legal */}
         <div className="mt-8 flex items-center justify-center gap-6 text-base">
-          <a href="#" className="text-gray-500 transition-colors hover:text-navy-700">
+          <Link to="/privacy" className="text-gray-500 transition-colors hover:text-navy-700">
             Privacy Policy
-          </a>
+          </Link>
           <Dot />
-          <a href="#" className="text-gray-500 transition-colors hover:text-navy-700">
+          <Link to="/terms" className="text-gray-500 transition-colors hover:text-navy-700">
             Terms &amp; Conditions
-          </a>
+          </Link>
         </div>
         <p className="mt-4 text-base text-gray-500">
           © {new Date().getFullYear()} Manokamana Hire Purchase Pvt. Ltd. All rights reserved.

@@ -56,11 +56,14 @@ function Reveal({ children, className = '', delay = 0 }) {
 
 export default function Careers() {
   const [openings, setOpenings] = useState([])
+  const [loaded, setLoaded] = useState(false)
   const [slide, setSlide] = useState(0)
 
   useEffect(() => {
     let alive = true
-    getOpenings().then((list) => alive && setOpenings(list))
+    getOpenings()
+      .then((list) => alive && setOpenings(list))
+      .finally(() => alive && setLoaded(true))
     return () => {
       alive = false
     }
@@ -176,6 +179,25 @@ export default function Careers() {
           </Reveal>
 
           <div className="mt-14 lg:mt-16">
+            {loaded && openings.length === 0 && (
+              <Reveal className="mx-auto max-w-xl rounded-3xl border border-dashed border-navy-900/20 bg-white/50 px-8 py-16 text-center">
+                <p className="font-display text-xl font-bold tracking-tight text-navy-900">
+                  No open positions right now
+                </p>
+                <p className="mx-auto mt-2 max-w-md leading-relaxed text-navy-900/55">
+                  We&apos;re not actively hiring at the moment, but we&apos;re always glad
+                  to hear from good people. Send your CV and we&apos;ll reach out when a
+                  role opens up.
+                </p>
+                <a
+                  href="mailto:info@manokamanahirepurchase.com.np?subject=Speculative%20application"
+                  className="mt-7 inline-flex items-center gap-1.5 rounded-full bg-navy-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-500"
+                >
+                  Send us your CV
+                  <ArrowUpRight className="h-4 w-4" strokeWidth={2.4} />
+                </a>
+              </Reveal>
+            )}
             {openings.map((job, i) => (
               <Reveal
                 key={job.id || job.title}

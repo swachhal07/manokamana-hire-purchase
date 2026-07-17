@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import {
   ChevronUp,
   ChevronDown,
@@ -380,9 +381,13 @@ export default function Contact() {
                   <span>
                     I agree to be contacted by Manokamana Hire Purchase regarding my
                     enquiry and accept the{' '}
-                    <a href="#" className="font-semibold text-brand-500 underline-offset-2 hover:underline">
+                    <Link
+                      to="/privacy"
+                      target="_blank"
+                      className="font-semibold text-brand-500 underline-offset-2 hover:underline"
+                    >
                       privacy policy
-                    </a>
+                    </Link>
                     .
                   </span>
                 </label>
