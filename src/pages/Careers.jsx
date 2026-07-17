@@ -145,10 +145,6 @@ export default function Careers() {
                 />
               ))}
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-900/45 via-transparent to-transparent" />
-              <div className="absolute right-4 top-4 inline-flex items-center gap-2 rounded-full bg-white/90 px-3.5 py-2 text-xs font-semibold text-navy-700 shadow-sm backdrop-blur">
-                <MapPin className="h-4 w-4 text-brand-500" strokeWidth={2.2} />
-                Kamaladi, Kathmandu
-              </div>
             </div>
           </div>
         </div>

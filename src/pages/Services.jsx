@@ -57,7 +57,7 @@ const services = [
 ]
 
 const steps = [
-  { n: '01', title: 'Enquire', text: 'Tell us what you want to own — online, by phone, or at our Kamaladi office.' },
+  { n: '01', title: 'Enquire', text: 'Tell us what you want to own online, by phone, or at our Kantipath office.' },
   { n: '02', title: 'Assess', text: 'An advisor sizes the loan around your income and picks terms you can keep.' },
   { n: '03', title: 'Approve', text: 'Lean paperwork, quick verification, and a clear agreement with no surprises.' },
   { n: '04', title: 'Own', text: 'Take delivery and start earning with it. We stay reachable for the full term.' },
@@ -289,9 +289,8 @@ export default function Services() {
                         {/* Offset frame */}
                         <div
                           aria-hidden="true"
-                          className={`absolute h-full w-full border-2 border-navy-900 ${
-                            flipped ? '-bottom-4 -left-4' : '-bottom-4 -right-4'
-                          }`}
+                          className={`absolute h-full w-full border-2 border-navy-900 ${flipped ? '-bottom-4 -left-4' : '-bottom-4 -right-4'
+                            }`}
                         />
                         <img
                           src={s.image}

@@ -13,6 +13,7 @@ import {
   Navigation,
 } from 'lucide-react'
 import Eyebrow from '../components/Eyebrow'
+import OfficeMap from '../components/OfficeMap'
 import brandImage from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.webp'
 import consultImage from '../assets/images/vitaly-gariev-0kWem6X0Mc8-unsplash.webp'
 
@@ -58,11 +59,6 @@ const channels = [
   },
 ]
 
-// OpenStreetMap embed — unlike Google Maps embeds, it isn't classified as a
-// tracker, so it renders for everyone (Edge tracking-prevention, ad blockers,
-// etc. don't block it). `marker` drops a pin on the office; `bbox` frames it.
-const mapSrc =
-  'https://www.openstreetmap.org/export/embed.html?bbox=85.30844%2C27.7078334%2C85.31844%2C27.7138334&layer=mapnik&marker=27.7108334%2C85.31344'
 // Official Google Maps directions URL — opens turn-by-turn directions to the
 // office (launches the Maps app on mobile). `destination_place_id` labels the
 // destination as the business; the coordinates guarantee the exact location.
@@ -437,13 +433,7 @@ export default function Contact() {
 
           {/* Map */}
           <div className="mt-10 overflow-hidden rounded-2xl border border-gray-200 shadow-xl shadow-navy-900/5 lg:mt-12">
-            <iframe
-              title="Manokamana Hire Purchase location"
-              src={mapSrc}
-              className="block h-[380px] w-full sm:h-[460px] lg:h-[520px]"
-              style={{ border: 0 }}
-              loading="lazy"
-            />
+            <OfficeMap className="h-[380px] w-full sm:h-[460px] lg:h-[520px]" />
           </div>
 
           {/* CTA */}

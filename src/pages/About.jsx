@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { MapPin } from 'lucide-react'
 import Eyebrow from '../components/Eyebrow'
 import dugarLogo from '../assets/images/dugar-logo.png'
-import teamImage from '../assets/images/leadership-team.webp'
 
 const grain =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
@@ -88,25 +86,37 @@ export default function About() {
           style={{ backgroundImage: grain }}
         />
 
-        <div className="relative mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
-          {/* Left — words */}
-          <div>
-            <Eyebrow align="left" className="animate-fade-up">About us</Eyebrow>
+        <div className="relative mx-auto max-w-6xl">
+          <Eyebrow className="animate-fade-up">About us</Eyebrow>
 
-            <h1
-              className="animate-fade-up mt-7 font-display text-5xl font-extrabold leading-[0.98] tracking-tight text-navy-900 sm:text-6xl lg:text-[4.4rem]"
-              style={{ animationDelay: '70ms' }}
-            >
-              We put Nepal&apos;s
-              <br />
-              ambitions
-              <br />
-              <span className="text-brand-500">on wheels.</span>
-            </h1>
+          {/* Full-bleed headline */}
+          <h1
+            className="animate-fade-up mt-8 text-center font-display font-extrabold leading-[0.95] tracking-tight text-navy-900"
+            style={{ animationDelay: '70ms', fontSize: 'clamp(3rem, 7vw, 5.5rem)' }}
+          >
+            We put Nepal&apos;s ambitions
+            <br />
+            <span className="text-brand-500">on wheels.</span>
+          </h1>
 
+          {/* Document meta rule */}
+          <div
+            className="animate-fade-up mt-14 flex flex-wrap items-center justify-between gap-x-10 gap-y-3 border-y border-dashed border-navy-900/20 py-4 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-navy-900/45"
+            style={{ animationDelay: '140ms' }}
+          >
+            <span className="inline-flex items-center gap-2.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
+              Licensed by Nepal Rastra Bank
+            </span>
+            <span>Est. January 2020</span>
+            <span>Backed by MV Dugar Group</span>
+          </div>
+
+          {/* Intro + dictionary entry */}
+          <div className="mt-14 grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-24">
             <p
-              className="animate-fade-up mt-7 max-w-lg text-lg leading-relaxed text-navy-900/65"
-              style={{ animationDelay: '140ms' }}
+              className="animate-fade-up text-justify text-lg leading-relaxed text-navy-900/65 first-letter:float-left first-letter:mr-3 first-letter:font-display first-letter:text-[4.2rem] first-letter:font-extrabold first-letter:leading-[0.8] first-letter:text-brand-500"
+              style={{ animationDelay: '200ms' }}
             >
               Manokamana Hire Purchase Pvt. Ltd. is a financial institution
               licensed by Nepal Rastra Bank, Central Bank of Nepal to conduct
@@ -124,41 +134,25 @@ export default function About() {
 
             {/* Dictionary entry card */}
             <div
-              className="animate-fade-up mt-9 max-w-md border-l-4 border-brand-500 bg-white py-5 pl-6 pr-6 shadow-[0_16px_40px_-16px_rgba(10,28,52,0.18)]"
-              style={{ animationDelay: '210ms' }}
+              className="animate-fade-up relative border-l-4 border-brand-500 bg-white py-10 pl-10 pr-10 shadow-[0_20px_50px_-18px_rgba(10,28,52,0.2)] lg:-translate-y-8"
+              style={{ animationDelay: '260ms' }}
             >
+              <span className="pointer-events-none absolute -top-7 right-6 select-none font-display text-[7rem] font-extrabold leading-none text-navy-900/[0.06]">
+                &rdquo;
+              </span>
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <p className="font-display text-2xl font-extrabold tracking-tight text-navy-900">
+                <p className="font-display text-4xl font-extrabold tracking-tight text-navy-900">
                   ma·no·kā·ma·nā
                 </p>
                 <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-navy-900/40">
                   noun · Nepali
                 </p>
               </div>
-              <p className="mt-2.5 leading-relaxed text-navy-900/60">
+              <p className="mt-3.5 text-lg leading-relaxed text-navy-900/60">
                 <span className="font-semibold text-brand-600">A heartfelt wish.</span>{' '}
                 Ours: that the distance between wanting a vehicle and owning one
                 should never come down to a lump sum.
               </p>
-            </div>
-          </div>
-
-          {/* Right — feature photo */}
-          <div
-            className="animate-fade-up relative pl-0"
-            style={{ animationDelay: '170ms' }}
-          >
-            <div className="relative overflow-hidden rounded-2xl">
-              <img
-                src={teamImage}
-                alt="The Manokamana leadership team"
-                className="h-[380px] w-full object-cover sm:h-[500px]"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-900/45 via-transparent to-transparent" />
-              <div className="absolute right-4 top-4 inline-flex items-center gap-2 rounded-full bg-white/90 px-3.5 py-2 text-xs font-semibold text-navy-700 shadow-sm backdrop-blur">
-                <MapPin className="h-4 w-4 text-brand-500" strokeWidth={2.2} />
-                Kamaladi, Kathmandu
-              </div>
             </div>
           </div>
         </div>
