@@ -58,12 +58,11 @@ const channels = [
   },
 ]
 
-// Official Google Maps "embed" endpoint — served without X-Frame-Options, so
-// it renders inside an iframe. (The older `?output=embed` trick is refused by
-// many browsers, showing a "content blocked" placeholder.) The `!1s<placeId>`
-// segment is the Manokamana Hire Purchase listing, so the map drops a labelled pin.
+// OpenStreetMap embed — unlike Google Maps embeds, it isn't classified as a
+// tracker, so it renders for everyone (Edge tracking-prevention, ad blockers,
+// etc. don't block it). `marker` drops a pin on the office; `bbox` frames it.
 const mapSrc =
-  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1765!2d85.31344!3d27.7108334!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1936cb09b9c9%3A0xe2e7a0fb45896ea4!2sManakamana%20Hire%20Purchase%20Pvt%20Ltd!5e0!3m2!1sen!2snp!4v1700000000000!5m2!1sen!2snp'
+  'https://www.openstreetmap.org/export/embed.html?bbox=85.30844%2C27.7078334%2C85.31844%2C27.7138334&layer=mapnik&marker=27.7108334%2C85.31344'
 // Official Google Maps directions URL — opens turn-by-turn directions to the
 // office (launches the Maps app on mobile). `destination_place_id` labels the
 // destination as the business; the coordinates guarantee the exact location.
