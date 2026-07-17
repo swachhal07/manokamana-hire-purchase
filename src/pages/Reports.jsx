@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Download, FileText, ShieldCheck } from 'lucide-react'
+import { ArrowUpRight, FileText, ShieldCheck } from 'lucide-react'
 import { getReports } from '../lib/reportStore'
 
 const grain =
@@ -143,8 +143,8 @@ function ReportCard({ report }) {
             rel="noopener noreferrer"
             className="mt-4 inline-flex items-center gap-2 rounded-full border border-navy-900/15 px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:border-brand-500 hover:text-brand-600"
           >
-            <Download className="h-4 w-4" strokeWidth={2.2} />
-            Download
+            View report
+            <ArrowUpRight className="h-4 w-4" strokeWidth={2.2} />
           </a>
         )}
       </div>

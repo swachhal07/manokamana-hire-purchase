@@ -18,6 +18,7 @@ import {
   ArrowRight,
   ArrowLeft,
   ShieldCheck,
+  AlertTriangle,
 } from 'lucide-react'
 import { api, getToken, setToken, clearToken } from '../lib/api'
 import { PERIODS } from '../lib/reportStore'
@@ -94,6 +95,88 @@ function useNotice() {
     setTimeout(() => setMsg(null), 4000)
   }
   return [msg, notify]
+}
+
+/* In-app confirmation dialog — replaces the browser's native window.confirm()
+   so destructive actions match the dashboard's look and feel. */
+function ConfirmDialog({ title, message, confirmLabel, onConfirm, onCancel }) {
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onCancel()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onCancel])
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-navy-900/40 px-6 backdrop-blur-sm"
+      onClick={onCancel}
+    >
+      <div
+        role="alertdialog"
+        aria-modal="true"
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-sm rounded-3xl border border-black/5 bg-white p-7 shadow-[0_24px_60px_-20px_rgba(10,28,52,0.4)]"
+      >
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-red-600">
+          <AlertTriangle className="h-6 w-6" />
+        </div>
+        <h2 className="mt-4 font-display text-xl font-extrabold tracking-tight text-navy-900">
+          {title}
+        </h2>
+        <p className="mt-1.5 text-sm leading-relaxed text-navy-900/60">{message}</p>
+        <div className="mt-6 flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-full px-5 py-2.5 text-sm font-semibold text-navy-900/70 transition-colors hover:bg-navy-900/5"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            autoFocus
+            onClick={onConfirm}
+            className="inline-flex items-center gap-2 rounded-full bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700"
+          >
+            <Trash2 className="h-4 w-4" />
+            {confirmLabel}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* Promise-based confirm: `await confirm(...)` resolves true/false when the user
+   picks an option. Returns the dialog element to drop into the component tree. */
+function useConfirm() {
+  const [state, setState] = useState(null)
+
+  const confirm = ({ title = 'Are you sure?', message, confirmLabel = 'Delete' }) =>
+    new Promise((resolve) => {
+      setState({ title, message, confirmLabel, resolve })
+    })
+
+  const settle = (result) => {
+    setState((s) => {
+      s?.resolve(result)
+      return null
+    })
+  }
+
+  const dialog = state ? (
+    <ConfirmDialog
+      title={state.title}
+      message={state.message}
+      confirmLabel={state.confirmLabel}
+      onConfirm={() => settle(true)}
+      onCancel={() => settle(false)}
+    />
+  ) : null
+
+  return [dialog, confirm]
 }
 
 /* ── Login ─────────────────────────────────────────────────────── */
@@ -394,6 +477,7 @@ function ReportsPanel({ onAuthFail }) {
   const [file, setFile] = useState(null)
   const [busy, setBusy] = useState(false)
   const [msg, notify] = useNotice()
+  const [confirmDialog, confirm] = useConfirm()
 
   const refresh = () => api.getReports().then(setReports).catch(() => {})
   useEffect(() => {
@@ -422,7 +506,11 @@ function ReportsPanel({ onAuthFail }) {
   }
 
   async function remove(id) {
-    if (!window.confirm('Delete this report? This cannot be undone.')) return
+    const ok = await confirm({
+      title: 'Delete this report?',
+      message: 'This financial report will be removed from the site. This cannot be undone.',
+    })
+    if (!ok) return
     try {
       await api.deleteReport(id)
       notify('Report deleted')
@@ -436,6 +524,7 @@ function ReportsPanel({ onAuthFail }) {
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,420px)_1fr]">
+      {confirmDialog}
       {/* Publish form */}
       <form
         onSubmit={submit}
@@ -538,6 +627,7 @@ function BlogPanel({ onAuthFail }) {
   const [image, setImage] = useState(null)
   const [busy, setBusy] = useState(false)
   const [msg, notify] = useNotice()
+  const [confirmDialog, confirm] = useConfirm()
 
   const refresh = () => api.getPosts().then(setPosts).catch(() => {})
   useEffect(() => {
@@ -573,7 +663,11 @@ function BlogPanel({ onAuthFail }) {
   }
 
   async function remove(slug) {
-    if (!window.confirm('Delete this post? This cannot be undone.')) return
+    const ok = await confirm({
+      title: 'Delete this post?',
+      message: 'This blog post will be removed from the site. This cannot be undone.',
+    })
+    if (!ok) return
     try {
       await api.deletePost(slug)
       notify('Post deleted')
@@ -588,6 +682,7 @@ function BlogPanel({ onAuthFail }) {
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,480px)_1fr]">
+      {confirmDialog}
       {/* Write form */}
       <form onSubmit={submit} className="h-fit space-y-4 rounded-3xl border border-black/5 bg-white p-6">
         <h2 className="font-display text-lg font-extrabold text-navy-900">Write a post</h2>
@@ -682,6 +777,7 @@ function MemberCard({ section, index, member, fallback, onSaved, onAuthFail, onR
   const [preview, setPreview] = useState('')
   const [busy, setBusy] = useState(false)
   const [msg, notify] = useNotice()
+  const [confirmDialog, confirm] = useConfirm()
 
   useEffect(() => {
     setForm({ name: member.name, role: member.role, bio: member.bio || '' })
@@ -715,7 +811,12 @@ function MemberCard({ section, index, member, fallback, onSaved, onAuthFail, onR
   }
 
   async function remove() {
-    if (!window.confirm(`Remove ${member.name}?`)) return
+    const ok = await confirm({
+      title: `Remove ${member.name}?`,
+      message: 'This profile will be removed from the Leadership page. This cannot be undone.',
+      confirmLabel: 'Remove',
+    })
+    if (!ok) return
     try {
       await api.deleteTeamMember(section, index)
       onRemoved()
@@ -729,6 +830,7 @@ function MemberCard({ section, index, member, fallback, onSaved, onAuthFail, onR
 
   return (
     <div className="rounded-3xl border border-black/5 bg-white p-5">
+      {confirmDialog}
       <div className="flex items-start gap-4">
         <label className="group relative block h-24 w-20 shrink-0 cursor-pointer overflow-hidden rounded-xl bg-navy-900/5">
           {shownImage ? (
@@ -916,6 +1018,7 @@ function CareersPanel({ onAuthFail }) {
   const [form, setForm] = useState(emptyOpening)
   const [busy, setBusy] = useState(false)
   const [msg, notify] = useNotice()
+  const [confirmDialog, confirm] = useConfirm()
 
   const refresh = () => api.getOpenings().then(setOpenings).catch(() => {})
   useEffect(() => {
@@ -939,7 +1042,11 @@ function CareersPanel({ onAuthFail }) {
   }
 
   async function remove(id) {
-    if (!window.confirm('Delete this opening? This cannot be undone.')) return
+    const ok = await confirm({
+      title: 'Delete this opening?',
+      message: 'This job opening will be removed from the Careers page. This cannot be undone.',
+    })
+    if (!ok) return
     try {
       await api.deleteOpening(id)
       notify('Opening deleted')
@@ -953,6 +1060,7 @@ function CareersPanel({ onAuthFail }) {
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,420px)_1fr]">
+      {confirmDialog}
       {/* Publish form */}
       <form onSubmit={submit} className="h-fit space-y-4 rounded-3xl border border-black/5 bg-white p-6">
         <h2 className="font-display text-lg font-extrabold text-navy-900">Post an opening</h2>
@@ -986,8 +1094,8 @@ function CareersPanel({ onAuthFail }) {
         </h2>
         {openings.length === 0 && (
           <p className="text-sm text-navy-900/50">
-            No openings posted from the dashboard yet. The Careers page still shows its built-in
-            default role.
+            No openings posted yet. Until you publish one, the Careers page shows its
+            &ldquo;No open positions right now&rdquo; message.
           </p>
         )}
         {openings.map((o) => (

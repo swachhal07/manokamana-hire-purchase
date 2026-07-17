@@ -36,7 +36,9 @@ router.post('/', requireAdmin, uploadPdf.single('file'), async (req, res, next) 
       const up = await uploadBuffer(req.file.buffer, {
         folder: 'reports',
         resourceType: 'raw',
-        filename: `${year}-${period}-${title}`.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        // Keep the .pdf extension so Cloudinary serves it as application/pdf,
+        // which lets browsers open it inline instead of forcing a download.
+        filename: `${year}-${period}-${title}`.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.pdf',
       })
       file = { fileUrl: up.url, filePublicId: up.publicId }
     }
@@ -79,7 +81,8 @@ router.put('/:id', requireAdmin, uploadPdf.single('file'), async (req, res, next
       const up = await uploadBuffer(req.file.buffer, {
         folder: 'reports',
         resourceType: 'raw',
-        filename: `${report.year}-${report.period}-${report.title}`.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        // Keep the .pdf extension so the file opens inline in the browser.
+        filename: `${report.year}-${report.period}-${report.title}`.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.pdf',
       })
       report.fileUrl = up.url
       report.filePublicId = up.publicId
