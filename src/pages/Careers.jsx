@@ -189,13 +189,13 @@ export default function Careers() {
                   to hear from good people. Send your CV and we&apos;ll reach out when a
                   role opens up.
                 </p>
-                <a
-                  href="mailto:info@manokamanahirepurchase.com.np?subject=Speculative%20application"
+                <Link
+                  to="/contact"
                   className="mt-7 inline-flex items-center gap-1.5 rounded-full bg-navy-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-500"
                 >
                   Send us your CV
                   <ArrowUpRight className="h-4 w-4" strokeWidth={2.4} />
-                </a>
+                </Link>
               </Reveal>
             )}
             {openings.map((job, i) => (

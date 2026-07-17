@@ -225,13 +225,13 @@ export default function EmiCalculator() {
                 <ArrowUpRight className="h-4 w-4" strokeWidth={2.5} />
               </span>
             </Link>
-            <a
-              href="tel:+9771800256258"
+            <Link
+              to="/contact"
               className="inline-flex items-center justify-center gap-2.5 rounded-full border border-white/25 px-7 py-3.5 text-base font-semibold text-white transition-colors hover:border-white hover:bg-white hover:text-navy-900"
             >
               <Phone className="h-4 w-4" strokeWidth={2.2} />
               Call us instead
-            </a>
+            </Link>
           </div>
         </div>
       </section>

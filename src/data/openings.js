@@ -1,17 +1,8 @@
 /**
- * Built-in default job opening.
+ * Built-in default job openings.
  *
- * The Careers page shows this single role out of the box. Additional openings
- * are published from the /admin dashboard and served by the backend — those
- * appear alongside this one (see src/lib/careerStore.js).
+ * Empty by default, so the Careers page shows its "No open positions right now"
+ * empty state until roles are published from the /admin dashboard and served by
+ * the backend (see src/lib/careerStore.js).
  */
-export const openings = [
-  {
-    id: 'credit-officer',
-    title: 'Credit Officer',
-    dept: 'Credit & Risk',
-    location: 'Kamaladi, Kathmandu',
-    type: 'Full-time',
-    desc: 'Assess hire-purchase applications, build customer relationships, and help underprivileged borrowers get on the road.',
-  },
-]
+export const openings = []
