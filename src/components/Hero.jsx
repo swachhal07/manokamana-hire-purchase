@@ -85,20 +85,23 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative mx-auto flex min-h-screen max-w-[1600px] flex-col justify-center px-6 lg:px-10">
-        <div ref={contentRef} className="max-w-2xl">
+        <div ref={contentRef} className="max-w-4xl">
           <span className="hero-anim mb-7 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white/90 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
             Licensed by Nepal Rastra Bank
           </span>
 
-          <h1 className="hero-anim text-5xl font-semibold leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl">
-            Drive Your
+          {/* Locked to two lines at every width: the size scales with the
+              viewport so "Through Hire Purchase" never has to wrap. */}
+          <h1 className="hero-anim whitespace-nowrap text-[clamp(1.6rem,6.8vw,4.25rem)] font-semibold leading-[1.08] tracking-tight text-white">
+            Powering Nepal
+            {/* Brand rule fills the gap left by the shorter first line */}
             <span className="ml-5 inline-block h-px w-24 bg-brand-500 align-middle sm:w-32" />
             <br />
-            Dreams Forward
+            Through Hire Purchase
           </h1>
 
-          <p className="hero-anim mt-6 max-w-lg text-base leading-relaxed text-white/75 sm:text-lg">
+          <p className="hero-anim mt-8 max-w-lg text-base leading-relaxed text-white/75 sm:text-lg">
             Vehicle hire purchase financing for two-wheelers, cars, commercial
             vehicles and heavy equipment fast approvals and clear terms for
             buyers across Nepal.

@@ -40,7 +40,7 @@ export default function AboutUs() {
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/60">
                 Request a free consultation
               </p>
-              <p className="mt-2 text-xl font-bold">Just Give A Missed Call</p>
+              <p className="mt-2 text-xl font-bold">Just Give A Call</p>
               <div className="mt-4 flex items-center gap-3">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full">
                   <Phone className="h-5 w-5 text-white" />

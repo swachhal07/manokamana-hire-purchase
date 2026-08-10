@@ -38,6 +38,7 @@ export const api = {
   getPost: (slug) => request(`/posts/${slug}`),
   getTeam: () => request('/team'),
   getOpenings: () => request('/careers'),
+  getNotice: () => request('/notice'),
 
   /* ── Admin (multipart so files can ride along) ───────────────── */
 
@@ -59,4 +60,7 @@ export const api = {
   createOpening: (body) => request('/careers', { method: 'POST', auth: true, body }),
   updateOpening: (id, body) => request(`/careers/${id}`, { method: 'PUT', auth: true, body }),
   deleteOpening: (id) => request(`/careers/${id}`, { method: 'DELETE', auth: true }),
+
+  saveNotice: (fd) => request('/notice', { method: 'PUT', auth: true, formData: fd }),
+  clearNotice: () => request('/notice', { method: 'DELETE', auth: true }),
 }

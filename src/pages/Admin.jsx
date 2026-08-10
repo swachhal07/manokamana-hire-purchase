@@ -19,6 +19,8 @@ import {
   ArrowLeft,
   ShieldCheck,
   AlertTriangle,
+  Megaphone,
+  X,
 } from 'lucide-react'
 import { api, getToken, setToken, clearToken } from '../lib/api'
 import { PERIODS } from '../lib/reportStore'
@@ -210,6 +212,7 @@ function Login({ onDone }) {
     { icon: Newspaper, label: 'Blog posts', blurb: 'News, guides and notices' },
     { icon: Users, label: 'Team roster', blurb: 'Board and management profiles' },
     { icon: Briefcase, label: 'Job openings', blurb: 'Careers page listings' },
+    { icon: Megaphone, label: 'Popup notice', blurb: 'Site-wide announcement' },
   ]
 
   return (
@@ -1121,6 +1124,210 @@ function CareersPanel({ onAuthFail }) {
   )
 }
 
+/* ── Notice popup panel ────────────────────────────────────────── */
+
+const emptyNotice = {
+  active: false,
+  title: '',
+  linkUrl: '',
+  startsAt: '',
+  endsAt: '',
+  image: '',
+  live: false,
+}
+
+/**
+ * The popup that greets visitors on the public site. One notice at a time:
+ * upload the artwork, optionally set a date window, switch it on.
+ */
+function NoticePanel({ onAuthFail }) {
+  const [form, setForm] = useState(emptyNotice)
+  const [file, setFile] = useState(null)
+  const [preview, setPreview] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [msg, notify] = useNotice()
+  const [confirmDialog, confirm] = useConfirm()
+
+  useEffect(() => {
+    api
+      .getNotice()
+      .then((n) => setForm({ ...emptyNotice, ...n }))
+      .catch(() => {})
+  }, [])
+
+  // Local object URL so a freshly picked file previews before it's uploaded.
+  useEffect(() => {
+    if (!file) return setPreview('')
+    const url = URL.createObjectURL(file)
+    setPreview(url)
+    return () => URL.revokeObjectURL(url)
+  }, [file])
+
+  const shown = preview || form.image
+  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value })
+
+  async function save(e) {
+    e.preventDefault()
+    if (form.active && !shown) {
+      return notify('Upload a notice image before switching it on', 'error')
+    }
+    setBusy(true)
+    try {
+      const fd = new FormData()
+      fd.append('active', String(form.active))
+      fd.append('title', form.title)
+      fd.append('linkUrl', form.linkUrl)
+      fd.append('startsAt', form.startsAt)
+      fd.append('endsAt', form.endsAt)
+      if (file) fd.append('image', file)
+
+      const saved = await api.saveNotice(fd)
+      setForm({ ...emptyNotice, ...saved })
+      setFile(null)
+      notify(saved.live ? 'Notice is live on the website' : 'Notice saved (currently hidden)')
+    } catch (err) {
+      if (/log in/i.test(err.message)) return onAuthFail()
+      notify(err.message, 'error')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function remove() {
+    const ok = await confirm({
+      title: 'Remove this notice?',
+      message:
+        'The image will be deleted and the popup switched off. Visitors will stop seeing it immediately.',
+      confirmLabel: 'Remove',
+    })
+    if (!ok) return
+    try {
+      const cleared = await api.clearNotice()
+      setForm({ ...emptyNotice, ...cleared })
+      setFile(null)
+      notify('Notice removed')
+    } catch (err) {
+      if (/log in/i.test(err.message)) return onAuthFail()
+      notify(err.message, 'error')
+    }
+  }
+
+  return (
+    <div className="grid gap-8 lg:grid-cols-[minmax(0,420px)_1fr]">
+      {confirmDialog}
+
+      {/* Editor */}
+      <form onSubmit={save} className="h-fit space-y-4 rounded-3xl border border-black/5 bg-white p-6">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="font-display text-lg font-extrabold text-navy-900">Popup notice</h2>
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${
+              form.live ? 'bg-emerald-50 text-emerald-700' : 'bg-navy-900/5 text-navy-900/50'
+            }`}
+          >
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${form.live ? 'bg-emerald-500' : 'bg-navy-900/30'}`}
+            />
+            {form.live ? 'Showing' : 'Hidden'}
+          </span>
+        </div>
+        <p className="text-sm leading-relaxed text-navy-900/55">
+          Upload the notice exactly as you&apos;d publish it in a newspaper. It appears over the
+          website a moment after a visitor arrives, and they can close it.
+        </p>
+
+        <Field label="Notice image">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setFile(e.target.files[0] || null)}
+            className="text-sm text-navy-900/70 file:mr-3 file:rounded-full file:border-0 file:bg-navy-900 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
+          />
+        </Field>
+
+        <Field label="Short description">
+          <input
+            value={form.title}
+            onChange={set('title')}
+            className={inputCls}
+            placeholder="e.g. 35-day land purchase tender notice"
+          />
+        </Field>
+
+        <Field label="Link on click">
+          <input
+            value={form.linkUrl}
+            onChange={set('linkUrl')}
+            className={inputCls}
+            placeholder="https://… (optional)"
+          />
+        </Field>
+
+        <div className="grid grid-cols-2 items-end gap-3">
+          <Field label="Show from">
+            <input type="date" value={form.startsAt} onChange={set('startsAt')} className={inputCls} />
+          </Field>
+          <Field label="Show until">
+            <input type="date" value={form.endsAt} onChange={set('endsAt')} className={inputCls} />
+          </Field>
+        </div>
+        <p className="-mt-1 text-xs text-navy-900/45">
+          Both dates are optional — leave them blank to run the notice until you switch it off
+          yourself.
+        </p>
+
+        <label className="flex items-center gap-3 rounded-2xl bg-navy-900/[0.03] px-4 py-3">
+          <input
+            type="checkbox"
+            checked={form.active}
+            onChange={(e) => setForm({ ...form, active: e.target.checked })}
+            className="h-4 w-4 accent-brand-500"
+          />
+          <span className="text-sm font-semibold text-navy-900">Show this notice on the website</span>
+        </label>
+
+        <Notice msg={msg} />
+
+        <div className="flex flex-wrap items-center gap-3">
+          <Button type="submit" busy={busy}>
+            <UploadCloud className="h-4 w-4" /> Save notice
+          </Button>
+          {form.image && (
+            <button
+              type="button"
+              onClick={remove}
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-red-600 transition-colors hover:bg-red-50"
+            >
+              <Trash2 className="h-4 w-4" /> Remove notice
+            </button>
+          )}
+        </div>
+      </form>
+
+      {/* Preview */}
+      <div className="space-y-3">
+        <h2 className="font-display text-lg font-extrabold text-navy-900">
+          Preview {preview && <span className="text-sm font-semibold text-brand-500">· unsaved</span>}
+        </h2>
+        {shown ? (
+          <div className="rounded-3xl border border-black/5 bg-navy-900/90 p-6">
+            <div className="relative mx-auto w-fit max-w-full bg-white shadow-2xl">
+              <span className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-navy-900 shadow ring-1 ring-black/5">
+                <X className="h-4 w-4" strokeWidth={2.5} />
+              </span>
+              <img src={shown} alt="" className="block max-h-[60vh] w-auto max-w-full object-contain" />
+            </div>
+          </div>
+        ) : (
+          <p className="rounded-3xl border border-dashed border-navy-900/15 px-6 py-10 text-center text-sm text-navy-900/50">
+            No notice image uploaded yet. Pick one on the left to see how it will look.
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
+
 /* ── Shell ─────────────────────────────────────────────────────── */
 
 const NAV = [
@@ -1128,6 +1335,7 @@ const NAV = [
   { id: 'blog', label: 'Blog', icon: Newspaper, blurb: 'Write and manage articles' },
   { id: 'team', label: 'Team', icon: Users, blurb: 'Board & management roster' },
   { id: 'careers', label: 'Careers', icon: Briefcase, blurb: 'Post & manage job openings' },
+  { id: 'notice', label: 'Notice', icon: Megaphone, blurb: 'Popup notice shown to visitors' },
 ]
 
 export default function Admin() {
@@ -1221,6 +1429,7 @@ export default function Admin() {
           {tab === 'blog' && <BlogPanel onAuthFail={clearAuth} />}
           {tab === 'team' && <TeamPanel onAuthFail={clearAuth} />}
           {tab === 'careers' && <CareersPanel onAuthFail={clearAuth} />}
+          {tab === 'notice' && <NoticePanel onAuthFail={clearAuth} />}
         </main>
       </div>
 

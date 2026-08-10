@@ -51,16 +51,16 @@ export default function Reports() {
       />
 
       <div className="relative mx-auto max-w-5xl">
-        {/* Header */}
-        <div className="max-w-2xl">
-          <div className="flex items-center gap-3 text-sm font-bold uppercase tracking-[0.25em] text-brand-500">
+        {/* Header — centered, matching every other page hero */}
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="flex items-center justify-center gap-3 text-sm font-bold uppercase tracking-[0.25em] text-brand-500">
             <ShieldCheck className="h-4 w-4" strokeWidth={2.5} />
             Transparency
           </div>
           <h1 className="mt-5 font-display text-4xl font-extrabold leading-[0.98] tracking-tight text-navy-900 sm:text-5xl lg:text-6xl">
             Financial <span className="text-brand-500">reports.</span>
           </h1>
-          <p className="mt-5 text-base leading-relaxed text-navy-900/60 sm:text-lg">
+          <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-navy-900/60 sm:text-lg">
             Our audited earnings and financial performance, published quarterly
             and at year end. We believe in showing our numbers openly to the
             people who trust us with theirs.

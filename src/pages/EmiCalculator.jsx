@@ -9,6 +9,10 @@ const grain =
 const npr = (n) =>
   'Rs. ' + Math.round(n).toLocaleString('en-IN', { maximumFractionDigits: 0 })
 
+const group = (n) => n.toLocaleString('en-IN', { maximumFractionDigits: 2 })
+
+const clamp = (n, min, max) => Math.min(max, Math.max(min, n))
+
 /* ── Page ──────────────────────────────────────────────────────── */
 
 export default function EmiCalculator() {
@@ -59,7 +63,7 @@ export default function EmiCalculator() {
               className="animate-fade-up mx-auto mt-6 max-w-md text-lg leading-relaxed text-navy-900/60"
               style={{ animationDelay: '140ms' }}
             >
-              Drag the sliders. The receipt keeps up. When the figure feels
+              Type in your numbers. The receipt keeps up. When the figure feels
               right, bring it to us and we&apos;ll make it official.
             </p>
           </div>
@@ -74,41 +78,57 @@ export default function EmiCalculator() {
               <ControlRow
                 index="A"
                 label="Loan amount"
-                display={npr(amount)}
                 hint="How much do you want to borrow?"
                 value={amount}
                 min={50000}
                 max={10000000}
                 step={50000}
                 onChange={setAmount}
-                minLabel="Rs. 50 K"
-                maxLabel="Rs. 1 Cr"
+                prefix="Rs."
+                rangeLabel="Rs. 50,000 – Rs. 1,00,00,000"
+                presets={[
+                  { label: '3 L', value: 300000 },
+                  { label: '5 L', value: 500000 },
+                  { label: '15 L', value: 1500000 },
+                  { label: '50 L', value: 5000000 },
+                ]}
               />
               <ControlRow
                 index="B"
                 label="Interest rate"
-                display={`${rate}%`}
                 hint="Per annum, reducing balance"
                 value={rate}
                 min={5}
                 max={25}
                 step={0.25}
+                decimals={2}
                 onChange={setRate}
-                minLabel="5%"
-                maxLabel="25%"
+                suffix="% p.a."
+                rangeLabel="5% – 25%"
+                presets={[
+                  { label: '10%', value: 10 },
+                  { label: '12%', value: 12 },
+                  { label: '14%', value: 14 },
+                  { label: '16%', value: 16 },
+                ]}
               />
               <ControlRow
                 index="C"
                 label="Tenure"
-                display={tenureLabel}
-                hint={`${months} monthly instalments`}
+                hint={tenureLabel === '0 mo' ? 'Months to repay' : tenureLabel}
                 value={months}
                 min={6}
                 max={84}
                 step={6}
                 onChange={setMonths}
-                minLabel="6 mo"
-                maxLabel="7 yrs"
+                suffix="months"
+                rangeLabel="6 – 84 months"
+                presets={[
+                  { label: '1 yr', value: 12 },
+                  { label: '2 yrs', value: 24 },
+                  { label: '3 yrs', value: 36 },
+                  { label: '5 yrs', value: 60 },
+                ]}
                 last
               />
             </div>
@@ -244,53 +264,140 @@ export default function EmiCalculator() {
 function ControlRow({
   index,
   label,
-  display,
   hint,
   value,
   min,
   max,
   step,
+  decimals = 0,
   onChange,
-  minLabel,
-  maxLabel,
+  prefix,
+  suffix,
+  rangeLabel,
+  presets = [],
   last = false,
 }) {
-  const fill = ((value - min) / (max - min)) * 100
+  const [draft, setDraft] = useState(null)
+  const editing = draft !== null
+  const text = editing ? draft : group(value)
+
+  const parse = (s) => {
+    const n = Number(s.replace(/[^0-9.]/g, ''))
+    return Number.isFinite(n) ? n : null
+  }
+
+  const commit = (raw) => {
+    const n = parse(raw)
+    if (n === null || raw.trim() === '') {
+      setDraft(null)
+      return
+    }
+    const next = Number(clamp(n, min, max).toFixed(decimals))
+    onChange(next)
+    setDraft(null)
+  }
+
+  const nudge = (dir) => {
+    const base = parse(text) ?? value
+    const next = Number(clamp(base + dir * step, min, max).toFixed(decimals))
+    onChange(next)
+    setDraft(null)
+  }
+
+  const typed = editing ? parse(draft) : value
+  const outOfRange = typed !== null && (typed < min || typed > max)
+
   return (
     <div
       className={`border-t border-navy-900/10 py-8 lg:py-9 ${
         last ? 'border-b' : ''
       }`}
     >
-      <div className="flex items-end justify-between gap-4">
-        <div>
-          <p className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-navy-900/40">
-            <span className="flex h-6 w-6 items-center justify-center rounded-full border border-navy-900/20 font-display text-[11px] font-extrabold text-navy-900/60">
-              {index}
-            </span>
-            {label}
-          </p>
-          <p className="mt-3 font-display text-4xl font-extrabold tracking-tight text-navy-900 [font-variant-numeric:tabular-nums] sm:text-5xl">
-            {display}
-          </p>
-          <p className="mt-1.5 text-sm text-navy-900/45">{hint}</p>
+      <p className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-navy-900/40">
+        <span className="flex h-6 w-6 items-center justify-center rounded-full border border-navy-900/20 font-display text-[11px] font-extrabold text-navy-900/60">
+          {index}
+        </span>
+        {label}
+      </p>
+
+      {/* Typed value field */}
+      <div
+        className={`mt-3 flex items-baseline gap-2 border-b-2 pb-1 transition-colors ${
+          outOfRange
+            ? 'border-brand-500'
+            : 'border-navy-900/15 focus-within:border-navy-900'
+        }`}
+      >
+        {prefix && (
+          <span className="font-display text-3xl font-extrabold text-navy-900/35 sm:text-4xl">
+            {prefix}
+          </span>
+        )}
+        <input
+          type="text"
+          inputMode="decimal"
+          value={text}
+          onChange={(e) => setDraft(e.target.value)}
+          onFocus={(e) => {
+            setDraft(String(value))
+            requestAnimationFrame(() => e.target.select())
+          }}
+          onBlur={(e) => commit(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') e.currentTarget.blur()
+            if (e.key === 'ArrowUp') {
+              e.preventDefault()
+              nudge(1)
+            }
+            if (e.key === 'ArrowDown') {
+              e.preventDefault()
+              nudge(-1)
+            }
+          }}
+          aria-label={label}
+          className="w-full min-w-0 bg-transparent font-display text-4xl font-extrabold tracking-tight text-navy-900 outline-none [font-variant-numeric:tabular-nums] sm:text-5xl"
+        />
+        {suffix && (
+          <span className="shrink-0 font-display text-2xl font-extrabold text-navy-900/35 sm:text-3xl">
+            {suffix}
+          </span>
+        )}
+      </div>
+
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+        <p
+          className={`text-sm ${
+            outOfRange ? 'font-medium text-brand-500' : 'text-navy-900/45'
+          }`}
+        >
+          {outOfRange ? `Enter a value within ${rangeLabel}` : hint}
+        </p>
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-navy-900/35">
+          {rangeLabel}
+        </p>
+      </div>
+
+      {presets.length > 0 && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {presets.map((p) => (
+            <button
+              key={p.value}
+              type="button"
+              onClick={() => {
+                setDraft(null)
+                onChange(p.value)
+              }}
+              className={`rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+                value === p.value
+                  ? 'border-navy-900 bg-navy-900 text-white'
+                  : 'border-navy-900/15 text-navy-900/60 hover:border-navy-900/40 hover:text-navy-900'
+              }`}
+            >
+              {p.label}
+            </button>
+          ))}
         </div>
-      </div>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        aria-label={label}
-        className="emi-range mt-6 w-full"
-        style={{ '--fill': `${fill}%` }}
-      />
-      <div className="mt-2 flex justify-between text-[11px] font-semibold uppercase tracking-wide text-navy-900/35">
-        <span>{minLabel}</span>
-        <span>{maxLabel}</span>
-      </div>
+      )}
     </div>
   )
 }

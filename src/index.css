@@ -77,6 +77,36 @@ body {
   animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* ── Notice popup ───────────────────────────────────────────── */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes notice-pop {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.35s ease-out both;
+}
+
+.animate-notice-pop {
+  animation: notice-pop 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 /* ── Admin sign-in ──────────────────────────────────────────── */
 
 /* Traveling sheen across the card's top seam */
@@ -116,55 +146,11 @@ body {
   );
 }
 
-/* Styled range slider */
-.emi-range {
-  -webkit-appearance: none;
-  appearance: none;
-  height: 6px;
-  border-radius: 9999px;
-  background: linear-gradient(
-    to right,
-    #e11b22 0%,
-    #e11b22 var(--fill, 50%),
-    #e5e0d8 var(--fill, 50%),
-    #e5e0d8 100%
-  );
-  outline: none;
-}
 /* Hide the browser's built-in password reveal/clear icons (Edge/IE) so only
    our custom show/hide toggle appears on password fields. */
 input::-ms-reveal,
 input::-ms-clear {
   display: none;
-}
-
-.emi-range::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  height: 26px;
-  width: 26px;
-  border-radius: 9999px;
-  background: #ffffff;
-  border: 7px solid #e11b22;
-  box-shadow: 0 2px 8px rgba(10, 28, 52, 0.25);
-  cursor: grab;
-  transition: transform 0.15s ease;
-}
-.emi-range::-webkit-slider-thumb:hover {
-  transform: scale(1.12);
-}
-.emi-range::-webkit-slider-thumb:active {
-  cursor: grabbing;
-  transform: scale(1.05);
-}
-.emi-range::-moz-range-thumb {
-  height: 26px;
-  width: 26px;
-  border-radius: 9999px;
-  background: #ffffff;
-  border: 7px solid #e11b22;
-  box-shadow: 0 2px 8px rgba(10, 28, 52, 0.25);
-  cursor: grab;
 }
 
 /* Honor reduced-motion preference */

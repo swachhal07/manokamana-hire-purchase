@@ -45,7 +45,7 @@ function Reveal({ children, className = '', delay = 0 }) {
 /* ── Data ──────────────────────────────────────────────────────── */
 
 const stats = [
-  { value: 'Est. 2076', unit: 'BS', label: 'A young company, an old promise' },
+  { value: 'Est. 2074', unit: 'BS', label: 'A young company, an old promise' },
   { value: 'Multi', unit: 'sectors', label: 'Two-wheelers, cars, commercial and heavy equipment' },
   { value: 'Within a', unit: 'day', label: 'Typical reply time on every enquiry' },
   { value: '100%', unit: 'Nepali', label: 'Owned, staffed, and rooted in Kathmandu' },
@@ -123,8 +123,9 @@ export default function About() {
               hire purchase loan business, in accordance with the policy and
               procedural arrangements for granting approval to companies
               providing Hire Purchase Loans. This company was established in
-              January 2020 with the aim of providing financial services to its
-              automotive customers. Over the years, it has been providing
+              2018 with the aim of providing financial services to its
+              automotive customers, and began operations in January 2020 on
+              receiving its operating licence. Over the years, it has been providing
               multi-brand finance to thousands of low-income customers, financing
               the purchase of vehicles for self-employment purposes among
               underprivileged groups to uplift their livelihood, farmers, contractors, transporters and
