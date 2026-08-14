@@ -6,6 +6,7 @@ import { getOpenings } from '../lib/careerStore'
 import heroImage from '../assets/images/70_kmph_top_speed.webp'
 import heroExcavator from '../assets/images/650h zaxis.webp'
 import heroTractor from '../assets/images/john-deere-tractor-and-harvesters-8vy92xu1qcrorfub.webp'
+import Seo from '../components/Seo'
 
 const heroSlides = [
   { src: heroImage, alt: 'Mahindra Supro — the vehicles we help finance' },
@@ -80,6 +81,7 @@ export default function Careers() {
 
   return (
     <>
+      <Seo path="/careers" />
       {/* ══ Hero ═══════════════════════════════════════════════ */}
       <section className="relative overflow-hidden bg-[#fdfdfb] px-6 pb-20 pt-36 sm:px-10 lg:pb-28 lg:pt-44">
         <div

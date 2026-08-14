@@ -1,0 +1,346 @@
+{
+  "summary": {
+    "health_score": 30,
+    "business_type": "Local financial services — vehicle hire purchase / asset finance, single location, Kathmandu, Nepal. NRB-licensed lender, part of MV Dugar Group.",
+    "top_findings": [
+      "All 13 public routes ship the identical title tag and have no meta description — no title/meta management exists anywhere in the codebase.",
+      "No sitemap.xml and no site-owned robots.txt; /sitemap.xml returns the SPA shell with HTTP 200.",
+      "Soft 404s: every unknown URL returns HTTP 200 with the SPA shell, creating unlimited indexable duplicates of the homepage.",
+      "Zero structured data site-wide — no FinancialService, FAQPage, Organization, Article or BreadcrumbList JSON-LD.",
+      "Security headers declared in vercel.json are never applied — the site is served by Cloudflare, which does not read that file.",
+      "robots.txt actively blocks GPTBot, ClaudeBot, Google-Extended, CCBot and others, making the brand uncitable in AI search.",
+      "Homepage transfers 3.79 MB, including a 3000x1975 image rendered at 95x600 px."
+    ],
+    "quick_wins": [
+      "Add per-route <title> and <meta name=\"description\"> — React 19 hoists these natively, no new dependency needed.",
+      "Ship public/sitemap.xml (12 routes + 7 blog posts) and public/robots.txt with a Sitemap: directive.",
+      "Add FAQPage JSON-LD to the homepage — the 5 Q&As are already written and rendered.",
+      "Add alt text to the 6 homepage images that lack it, plus loading=\"lazy\" and explicit width/height on all images.",
+      "Add Open Graph and Twitter Card tags — every social share currently renders as a blank card."
+    ]
+  },
+  "categories": [
+    {
+      "name": "Technical SEO",
+      "score": 28,
+      "what_works": [
+        "HTTPS enforced, served from Cloudflare edge with a 607 ms TTFB",
+        "No redirect chains observed across the 20 URLs crawled",
+        "html lang=\"en\" and a correct viewport meta tag are present",
+        "Hashed asset filenames enable safe long-term caching"
+      ],
+      "findings": [
+        {
+          "title": "No XML sitemap",
+          "severity": "Critical",
+          "description": "/sitemap.xml returns the SPA shell with HTTP 200 and Content-Type: text/html, not XML. Google has no crawl manifest for the site's 20 URLs.",
+          "recommendation": "Generate public/sitemap.xml at build time covering the 12 public routes plus the 7 blog slugs from src/data/posts.js, and submit it in Google Search Console."
+        },
+        {
+          "title": "Soft 404s — unknown URLs return HTTP 200",
+          "severity": "Critical",
+          "description": "Verified: /this-page-does-not-exist-xyz returns HTTP 200 with the SPA shell. The React NotFound component renders, but Google reads a 200 status, so every typo'd or stale URL becomes an indexable duplicate of the homepage.",
+          "recommendation": "Return a real 404 status for unmatched paths via a Cloudflare Pages Function or 404.html fallback. As interim mitigation, render <meta name=\"robots\" content=\"noindex\"> from the NotFound component."
+        },
+        {
+          "title": "Security headers declared but never applied",
+          "severity": "Critical",
+          "description": "vercel.json defines CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy and Permissions-Policy, but the live response carries none of them. Server: cloudflare, with no Vercel headers present — the deployment platform does not read vercel.json.",
+          "recommendation": "Port all six headers to a Cloudflare Transform Rule or a public/_headers file, then delete or annotate vercel.json so it is not mistaken for live configuration."
+        },
+        {
+          "title": "/admin is publicly reachable and indexable",
+          "severity": "Critical",
+          "description": "App.jsx comments the route as a 'hidden admin dashboard', but there is no noindex, no robots disallow, and no server-side gate on the route. Obscurity is not access control.",
+          "recommendation": "Add Disallow: /admin and noindex as damage limitation, then add real server-side authentication on the backend endpoints the dashboard calls."
+        },
+        {
+          "title": "No site-owned robots.txt",
+          "severity": "High",
+          "description": "robots.txt is Cloudflare's managed default. It allows general crawling but carries no Sitemap: directive and was not authored for this site.",
+          "recommendation": "Create public/robots.txt with Allow: /, Disallow: /admin, and a Sitemap: directive — carrying the AI-crawler decision forward deliberately."
+        },
+        {
+          "title": "Client-side rendering leaves raw HTML empty",
+          "severity": "High",
+          "description": "Raw HTML is 942 bytes: an empty <div id=\"root\">. All content requires JS execution. Googlebot renders JS on a deferred second pass; Bingbot and most AI crawlers largely do not.",
+          "recommendation": "Add build-time prerendering (e.g. vite-plugin-prerender) to emit static HTML per route while keeping the existing React code — far cheaper than migrating to Next.js or Remix."
+        },
+        {
+          "title": "No canonical tags on any route",
+          "severity": "High",
+          "description": "Zero canonical tags site-wide. Combined with soft 404s, this leaves the site defenceless against duplicate indexing from ?utm_* parameters, trailing slashes and typo'd paths.",
+          "recommendation": "Emit a self-referencing <link rel=\"canonical\"> per route from the Seo component."
+        },
+        {
+          "title": "No Cache-Control on HTML; short TTL on immutable assets",
+          "severity": "Low",
+          "description": "HTML is served with no Cache-Control header. Content-hashed assets get max-age=14400 (4 hours) despite filenames that can never change.",
+          "recommendation": "Set max-age=31536000, immutable on hashed assets and an explicit short TTL with revalidation on HTML."
+        }
+      ]
+    },
+    {
+      "name": "Content Quality",
+      "score": 58,
+      "what_works": [
+        "Copy is specific, plainly written and free of finance-industry padding",
+        "Service categories break down into concrete asset types with real examples",
+        "Homepage FAQ answers genuine borrower questions (down payment, approval time, documents)",
+        "A /leadership page with named executives and a /reports page provide real E-E-A-T signals for a regulated lender",
+        "Blog offers concrete, quotable guidance such as the 2x income-to-EMI rule of thumb"
+      ],
+      "findings": [
+        {
+          "title": "Thin blog content",
+          "severity": "High",
+          "description": "7 posts totalling roughly 1,444 words of body copy in src/data/posts.js — averaging about 200 words each, with the featured pillar post the longest at around 330. Well below what ranks for competitive terms like 'hire purchase Nepal'.",
+          "recommendation": "Expand the three highest-intent posts to 1,200-1,800 words with worked examples using real Nepali price points, comparison tables, and internal links to /services and /emi-calculator."
+        },
+        {
+          "title": "No author attribution on YMYL financial content",
+          "severity": "High",
+          "description": "Blog posts carry no byline, author bio or credentials. Google weighs author expertise heavily for financial content. The /leadership page has the people; the posts do not connect to them.",
+          "recommendation": "Add an author field to each post in posts.js linked to a bio on /leadership, and mark it up with Article + Person schema."
+        },
+        {
+          "title": "Testimonials labelled 'GOOGLE REVIEW' are hardcoded in source",
+          "severity": "Medium",
+          "description": "Five named testimonials render from static component data rather than from the Google Business Profile. If any are illustrative rather than genuine, the 'GOOGLE REVIEW' label is a Google policy violation and a consumer-protection concern.",
+          "recommendation": "Verify each testimonial against a real GBP review. If genuine, pull them from the GBP API so they stay current. If not, remove the label. Do not add Review schema until this is settled."
+        },
+        {
+          "title": "No machine-readable publication dates",
+          "severity": "Medium",
+          "description": "Posts use Bikram Sambat dates ('Asar 26, 2083') — correct for the audience, but there is no ISO datePublished anywhere, so Google cannot assess freshness.",
+          "recommendation": "Add an ISO datePublished alongside the BS display date. Keep showing BS to readers; give Google ISO in the schema."
+        },
+        {
+          "title": "NRB license claimed without a number",
+          "severity": "Medium",
+          "description": "'Licensed by Nepal Rastra Bank' appears on the hero and About page with no license number, and the site publishes no street address or business hours anywhere.",
+          "recommendation": "Publish the NRB license number next to the claim, a full street address with ward and landmark, and business hours on /contact and in LocalBusiness schema."
+        }
+      ]
+    },
+    {
+      "name": "On-Page SEO",
+      "score": 18,
+      "what_works": [
+        "Exactly one H1 per page across all routes",
+        "Alt text that does exist is well written and descriptive",
+        "Main navigation links 8 routes with clean, readable URL slugs"
+      ],
+      "findings": [
+        {
+          "title": "One title tag shared across all 13 routes",
+          "severity": "Critical",
+          "description": "Every route returns <title>Manokamana Hire Purchase</title> — 23 characters, no service or location keywords. Verified by grep: no react-helmet, no document.title writes anywhere in src/.",
+          "recommendation": "Build a small Seo component using React 19's native metadata hoisting (no new dependency) and set unique titles per route; a full recommended set is in ACTION-PLAN.md."
+        },
+        {
+          "title": "Zero meta descriptions",
+          "severity": "Critical",
+          "description": "None of the 13 routes has a meta description, so Google fabricates snippets from page text for every result.",
+          "recommendation": "Add unique 140-160 character descriptions per route via the same Seo component."
+        },
+        {
+          "title": "No Open Graph or Twitter Card tags",
+          "severity": "High",
+          "description": "Zero social meta tags site-wide. Every WhatsApp, Facebook and LinkedIn share renders as a blank grey card — a daily conversion leak for a business that runs on local referral.",
+          "recommendation": "Add og:title, og:description, og:image, og:url and twitter:card, plus a default 1200x630 OG image."
+        },
+        {
+          "title": "/reports is orphaned from site navigation",
+          "severity": "Medium",
+          "description": "The /reports route is reachable only by direct URL — it appears in no nav or footer link. For a regulated lender, published financial disclosures are a strong E-E-A-T asset going to waste.",
+          "recommendation": "Link /reports from the main navigation or footer."
+        },
+        {
+          "title": "Brand-led H1 carries no search keywords",
+          "severity": "Medium",
+          "description": "The homepage H1 is 'Powering Nepal Through Hire Purchase' — a good brand line but a weak SEO line against what people actually search.",
+          "recommendation": "Keep the brand line as the visual hero and carry a keyword-bearing phrase such as 'Vehicle Hire Purchase Financing in Nepal' in the H1 or title tag."
+        },
+        {
+          "title": "Heading level skipped on the homepage",
+          "severity": "Low",
+          "description": "The homepage jumps H1 to H3 at the 'Driven By Your Ambitions' band before returning to H2.",
+          "recommendation": "Demote or promote that heading so levels descend without skipping."
+        }
+      ]
+    },
+    {
+      "name": "Schema / Structured Data",
+      "score": 0,
+      "what_works": [],
+      "findings": [
+        {
+          "title": "Zero JSON-LD site-wide",
+          "severity": "Critical",
+          "description": "No structured data on any page. For an NRB-licensed local lender this is the single biggest missed opportunity — FinancialService/LocalBusiness, FAQPage, Organization, Article, BreadcrumbList, Service and JobPosting are all directly applicable and all absent.",
+          "recommendation": "Add FinancialService schema site-wide in MainLayout with NAP, geo (27.7108334, 85.31344), areaServed and parentOrganization MV Dugar Group; then FAQPage, Article + Person, BreadcrumbList and JobPosting per page."
+        },
+        {
+          "title": "FAQPage schema missing despite FAQ content already on the page",
+          "severity": "High",
+          "description": "Five question-and-answer pairs are already written and rendered on the homepage, but carry no FAQPage markup — forfeiting rich-result eligibility for zero additional content work.",
+          "recommendation": "Wrap the existing homepage FAQ data in FAQPage JSON-LD."
+        },
+        {
+          "title": "Service data is structured in source but not marked up",
+          "severity": "Medium",
+          "description": "src/data/services.js already holds the five financing categories as structured objects, but /services emits no Service schema.",
+          "recommendation": "Emit Service schema on /services directly from the existing services.js data."
+        }
+      ]
+    },
+    {
+      "name": "Performance (CWV)",
+      "score": 40,
+      "what_works": [
+        "18 requests total on the homepage — a lean request count",
+        "DOMContentLoaded at 865 ms and load at 866 ms on desktop",
+        "Brotli compression active; JS compresses from 663 KB to 215 KB",
+        "preconnect hints correctly present for the Google Fonts origins",
+        "Modern image formats (WebP/AVIF) already adopted"
+      ],
+      "findings": [
+        {
+          "title": "Homepage transfers 3.79 MB",
+          "severity": "Critical",
+          "description": "Measured live: 3,792 KB total — 2,113 KB of images across 8 requests and 1,532 KB of fonts and CSS across 4. On a Nepali mobile connection this will very likely fail the LCP threshold.",
+          "recommendation": "Combine responsive image variants (2.2), route-level code splitting (2.3) and self-hosted subsetted fonts (2.4). Realistic target for images alone: 2.1 MB down to under 400 KB."
+        },
+        {
+          "title": "No route-level code splitting",
+          "severity": "High",
+          "description": "A single index.js bundle means Admin.jsx — the largest file in the project at 4,868 words — plus leaflet and gsap are downloaded by every homepage visitor who never visits those pages.",
+          "recommendation": "Convert routes to React.lazy() with Suspense, starting with /admin, /emi-calculator and the Leaflet map component."
+        },
+        {
+          "title": "Render-blocking third-party font stylesheet",
+          "severity": "Medium",
+          "description": "Inter and Sora are loaded via an external Google Fonts stylesheet in <head>, declaring 11 weights in total. preconnect is present, but the stylesheet still blocks render.",
+          "recommendation": "Self-host both families in public/fonts/ with font-display: swap, preload the two above-the-fold weights, and drop unused weights."
+        }
+      ]
+    },
+    {
+      "name": "AI Search Readiness",
+      "score": 10,
+      "what_works": [
+        "Content is well suited to passage-level citation — FAQ pairs, the 2x income-to-EMI rule, and document checklists are exactly what AI engines quote",
+        "Cloudflare Content-Signal header is present and correctly formed"
+      ],
+      "findings": [
+        {
+          "title": "robots.txt blocks every major AI crawler",
+          "severity": "High",
+          "description": "The Cloudflare-managed robots.txt sets Disallow: / for GPTBot, ClaudeBot, Google-Extended, CCBot, Bytespider, Applebot-Extended and meta-externalagent, with Content-Signal: ai-train=no. The brand cannot be cited by ChatGPT, Claude, Perplexity or Meta AI. This is Cloudflare's default posture, very likely enabled without a deliberate decision.",
+          "recommendation": "Make this an explicit business decision. Recommended middle path: allow citation crawlers (GPTBot, ClaudeBot, PerplexityBot) while keeping ai-train=no. Writing your own robots.txt overrides the managed one, so the decision gets made either way."
+        },
+        {
+          "title": "Client-side rendering blocks non-rendering AI crawlers",
+          "severity": "High",
+          "description": "Even if crawlers were allowed, AI crawlers that do not execute JavaScript would see a 942-byte empty shell. Both the robots policy and the rendering model must be fixed for AI visibility.",
+          "recommendation": "Pair the crawler-policy decision with build-time prerendering so allowed crawlers actually receive content."
+        },
+        {
+          "title": "No llms.txt",
+          "severity": "Low",
+          "description": "/llms.txt returns the SPA shell rather than a real file.",
+          "recommendation": "Add llms.txt only if AI crawler access is opened. Note that Google Search ignores it — this is a bet on emerging conventions, not a ranking factor."
+        }
+      ]
+    },
+    {
+      "name": "Images",
+      "score": 35,
+      "what_works": [
+        "Modern formats (WebP/AVIF) already in use across most assets",
+        "The 6 images that do carry alt text are descriptive and useful, e.g. 'John Deere tractor and harvesters we finance'"
+      ],
+      "findings": [
+        {
+          "title": "Images served at up to 30x their displayed size",
+          "severity": "Critical",
+          "description": "A 3000x1975 photo is served and displayed at 95x600 px; another 3000x2004 image gets the same treatment. No srcset and no responsive variants — every visitor downloads full-resolution originals to fill a thin vertical strip.",
+          "recommendation": "Generate 400/800/1600 px variants with sharp (already a devDependency) and emit srcset + sizes."
+        },
+        {
+          "title": "6 of 12 homepage images have empty alt attributes",
+          "severity": "High",
+          "description": "wp9212100.webp, rv-4006491267651bec.avif, photo-1612057473166.avif, 70_kmph_top_speed.webp, photo-1594771804886.avif and sinharai power.jpg all render with alt=\"\".",
+          "recommendation": "Add descriptive alt text to all six, matching the quality of the existing alt text."
+        },
+        {
+          "title": "No width/height or lazy loading on any image",
+          "severity": "High",
+          "description": "Not one of the 12 homepage images declares width or height, making every image a CLS contributor. None uses loading=\"lazy\", including below-fold images.",
+          "recommendation": "Add explicit width/height to every img, loading=\"lazy\" and decoding=\"async\" below the fold, and fetchpriority=\"high\" on the hero."
+        },
+        {
+          "title": "Oversized source files and non-descriptive filenames",
+          "severity": "Medium",
+          "description": "src/assets/images/ holds a 13 MB 'ZAXIS 140H Ultra.JPG' and an untracked 1.7 MB 'ChatGPT Image Aug 10, 2026....png'. Filenames such as photo-1612057473166-af2affdb92ad.avif carry no keyword value.",
+          "recommendation": "Remove both oversized files from the bundle path and rename assets descriptively, e.g. passenger-car-financing-nepal.avif."
+        }
+      ]
+    }
+  ],
+  "action_plan": {
+    "phases": [
+      {
+        "name": "Phase 1: Critical Fixes",
+        "timeframe": "Week 1",
+        "items": [
+          "Add per-route titles, meta descriptions and canonicals via a React 19 Seo component (3-4 h)",
+          "Ship public/sitemap.xml and a site-owned public/robots.txt, then submit in Google Search Console (1 h)",
+          "Return real 404 status codes for unmatched paths; add noindex to NotFound as interim mitigation (1-2 h)",
+          "Port the six security headers from vercel.json to Cloudflare Transform Rules or public/_headers (1 h)",
+          "Lock down /admin with server-side authentication, plus robots disallow and noindex (varies)"
+        ]
+      },
+      {
+        "name": "Phase 2: High-Impact Improvements",
+        "timeframe": "Weeks 2-3",
+        "items": [
+          "Add FinancialService, FAQPage, Organization, Article, BreadcrumbList and JobPosting JSON-LD (4-5 h)",
+          "Fix image delivery: responsive srcset, alt text, width/height, lazy loading, descriptive filenames (3-4 h)",
+          "Add route-level code splitting with React.lazy for /admin, /emi-calculator and the Leaflet map (2 h)",
+          "Self-host and subset fonts; raise hashed-asset cache TTL to one year immutable (2 h)",
+          "Decide the AI-crawler policy deliberately rather than inheriting Cloudflare's default (45 min)"
+        ]
+      },
+      {
+        "name": "Phase 3: Content & Authority",
+        "timeframe": "Month 2",
+        "items": [
+          "Expand the three highest-intent blog posts to 1,200-1,800 words (ongoing)",
+          "Add author attribution linked to /leadership bios, and ISO datePublished alongside BS dates (2-3 h)",
+          "Verify testimonial provenance against real Google Business Profile reviews before any Review schema (1 h)",
+          "Publish the NRB license number, full street address and business hours (1 h)",
+          "Link /reports from the main navigation or footer (15 min)",
+          "Add llms.txt if AI crawler access is opened (30 min)"
+        ]
+      },
+      {
+        "name": "Phase 4: Monitoring & Iteration",
+        "timeframe": "Ongoing",
+        "items": [
+          "Set up Google Search Console and submit the sitemap — without it nothing here can be measured",
+          "Set up Bing Webmaster Tools, where the client-side rendering issue will surface first",
+          "Claim and complete the Google Business Profile with categories, hours, photos and a review cadence",
+          "Add CrUX/PageSpeed monitoring for real-world Core Web Vitals on Nepali mobile networks",
+          "Evaluate build-time prerendering (vite-plugin-prerender) to emit static HTML per route (1-2 weeks)",
+          "Re-audit after Phase 2 to confirm the health score moves"
+        ]
+      }
+    ]
+  },
+  "artifacts": {
+    "findings_dir": "findings/",
+    "screenshots_dir": "screenshots/"
+  }
+}

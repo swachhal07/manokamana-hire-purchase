@@ -4,10 +4,12 @@ import Services from '../components/Services'
 import Testimonials from '../components/Testimonials'
 import Faq from '../components/Faq'
 import Reveal from '../components/Reveal'
+import Seo from '../components/Seo'
 
 export default function Home() {
   return (
     <>
+      <Seo path="/" />
       <Hero />
       <Reveal>
         <AboutUs />

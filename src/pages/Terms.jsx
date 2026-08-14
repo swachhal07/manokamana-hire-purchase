@@ -1,4 +1,5 @@
 import LegalLayout from '../components/LegalLayout'
+import Seo from '../components/Seo'
 
 const sections = [
   {
@@ -59,6 +60,8 @@ const sections = [
 
 export default function Terms() {
   return (
+    <>
+    <Seo path="/terms" />
     <LegalLayout
       eyebrow="Legal"
       title={
@@ -70,5 +73,6 @@ export default function Terms() {
       lastUpdated="17 July 2026"
       sections={sections}
     />
+    </>
   )
 }

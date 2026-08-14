@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ArrowUpRight, FileText, ShieldCheck } from 'lucide-react'
 import { getReports } from '../lib/reportStore'
+import Seo from '../components/Seo'
 
 const grain =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
@@ -44,6 +45,8 @@ export default function Reports() {
   }, [reports])
 
   return (
+    <>
+      <Seo path="/reports" />
     <section className="relative min-h-screen overflow-hidden bg-[#fdfdfb] px-6 pb-24 pt-32 sm:px-10 lg:pt-40">
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.06]"
@@ -107,6 +110,7 @@ export default function Reports() {
         )}
       </div>
     </section>
+    </>
   )
 }
 

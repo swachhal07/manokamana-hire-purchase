@@ -1,9 +1,16 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import Container from '../components/Container'
+import Seo from '../components/Seo'
 
 export default function NotFound() {
+  const { pathname } = useLocation()
+
   return (
     <section className="py-32">
+      {/* The host still returns HTTP 200 for unmatched paths (SPA fallback),
+          so noindex is what actually keeps junk URLs out of the index.
+          See manokamanahirepurchase.com.np-audit/ACTION-PLAN.md section 1.3. */}
+      <Seo path={pathname} title="Page not found | Manokamana Hire Purchase" noindex />
       <Container className="text-center">
         <p className="text-5xl font-bold text-brand-600">404</p>
         <h1 className="mt-4 text-2xl font-bold text-gray-900">Page not found</h1>

@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { getPostBySlug, posts } from '../data/posts'
 import { getPost } from '../lib/blogStore'
+import Seo from '../components/Seo'
+import { blogPostTitle } from '../lib/seo'
 
 const grain =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
@@ -47,6 +49,8 @@ export default function BlogPost() {
   if (!post) {
     return (
       <section className="flex min-h-screen flex-col items-center justify-center bg-[#fdfdfb] px-6 text-center">
+        {/* A missing article must never be indexed as a duplicate. */}
+        <Seo path={`/blog/${slug}`} title="Article not found | Manokamana Hire Purchase" noindex />
         <p className="text-sm font-bold uppercase tracking-[0.25em] text-brand-500">404</p>
         <h1 className="mt-4 font-display text-4xl font-extrabold tracking-tight text-navy-900">
           Article not found
@@ -65,6 +69,14 @@ export default function BlogPost() {
   const related = posts.filter((p) => p.slug !== post.slug).slice(0, 2)
 
   return (
+    <>
+    <Seo
+      path={`/blog/${post.slug}`}
+      title={blogPostTitle(post.title)}
+      description={post.excerpt}
+      image={post.image}
+      type="article"
+    />
     <article className="relative overflow-hidden bg-[#fdfdfb]">
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.05]"
@@ -177,5 +189,6 @@ export default function BlogPost() {
         </section>
       )}
     </article>
+    </>
   )
 }

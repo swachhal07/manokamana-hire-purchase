@@ -1,0 +1,77 @@
+# robots.txt — manokamanahirepurchase.com.np
+#
+# This file overrides Cloudflare's managed robots.txt, which previously blocked
+# every AI crawler by default. The policy below is deliberate:
+#
+#   Search engines      → full access
+#   AI citation bots    → allowed, so Manokamana can be cited (with attribution)
+#                         in ChatGPT, Claude and Perplexity answers
+#   AI training bots    → blocked, so content is not absorbed into model weights
+#
+# Content-Signal mirrors that intent for Cloudflare-aware crawlers.
+
+User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=no
+Allow: /
+Disallow: /admin
+
+# ---------------------------------------------------------------------------
+# AI search / citation crawlers — ALLOWED
+# These index content to answer user questions and cite the source.
+# ---------------------------------------------------------------------------
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin
+
+User-agent: Claude-SearchBot
+Allow: /
+Disallow: /admin
+
+User-agent: Claude-User
+Allow: /
+Disallow: /admin
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin
+
+User-agent: Perplexity-User
+Allow: /
+Disallow: /admin
+
+# ---------------------------------------------------------------------------
+# AI training crawlers — BLOCKED
+# These collect content to train or fine-tune models. No attribution, no
+# referral traffic.
+# ---------------------------------------------------------------------------
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: meta-externalagent
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+Sitemap: https://manokamanahirepurchase.com.np/sitemap.xml

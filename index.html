@@ -12,7 +12,19 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <title>Manokamana Hire Purchase</title>
+    <!--
+      No-JS fallback metadata. React 19 hoists per-route <title>/<meta> from
+      src/components/Seo.jsx into <head>, which would otherwise leave two of
+      each. main.jsx strips anything tagged data-fallback once React mounts, so
+      crawlers that don't execute JS still get sensible defaults and those that
+      do get the per-route values only.
+    -->
+    <title data-fallback>Manokamana Hire Purchase | Vehicle Financing in Nepal</title>
+    <meta
+      data-fallback
+      name="description"
+      content="NRB-licensed hire purchase financing for two-wheelers, cars, commercial vehicles and heavy equipment across Nepal."
+    />
   </head>
   <body>
     <div id="root"></div>

@@ -17,6 +17,7 @@ import Eyebrow from '../components/Eyebrow'
 import OfficeMap from '../components/OfficeMap'
 import brandImage from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.webp'
 import consultImage from '../assets/images/vitaly-gariev-0kWem6X0Mc8-unsplash.webp'
+import Seo from '../components/Seo'
 
 // Web3Forms access key (https://web3forms.com). Comes from VITE_WEB3FORMS_KEY,
 // set in .env.local (dev) and in the host's environment (prod). It ships in the
@@ -160,6 +161,7 @@ export default function Contact() {
 
   return (
     <>
+      <Seo path="/contact" />
       <section id="get-in-touch" className="grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
         {/* ══ LEFT — photographic brand panel ══════════════════════ */}
         <aside className="relative flex min-h-[560px] flex-col overflow-hidden bg-navy-900 lg:sticky lg:top-0 lg:h-screen">

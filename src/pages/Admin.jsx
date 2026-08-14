@@ -33,6 +33,7 @@ import mgmt1 from '../assets/images/vitaly-gariev-0kWem6X0Mc8-unsplash.webp'
 import mgmt2 from '../assets/images/vitaly-gariev-LS5dCL0NkhE-unsplash.webp'
 import mgmt3 from '../assets/images/vitaly-gariev-M5k978V3qBc-unsplash.webp'
 import mgmt4 from '../assets/images/photo-1628348068343-c6a848d2b6dd.webp'
+import Seo from '../components/Seo'
 
 // Same bundled portraits the public Leadership page falls back to, so the
 // admin cards preview what the site actually shows until a photo is uploaded.
@@ -1355,12 +1356,24 @@ export default function Admin() {
     clearAuth()
   }
 
-  if (!authed) return <Login onDone={() => setAuthed(true)} />
+  // The dashboard must never appear in search results. This is defence in
+  // depth alongside `Disallow: /admin` in public/robots.txt — neither is a
+  // substitute for server-side auth on the backend API.
+  const seo = <Seo path="/admin" title="Admin | Manokamana Hire Purchase" noindex />
+
+  if (!authed)
+    return (
+      <>
+        {seo}
+        <Login onDone={() => setAuthed(true)} />
+      </>
+    )
 
   const active = NAV.find((n) => n.id === tab)
 
   return (
     <div className="min-h-screen bg-[#f4f5f7] lg:grid lg:grid-cols-[260px_1fr]">
+      {seo}
       {/* ── Sidebar ─────────────────────────────────────────────── */}
       <aside className="flex flex-col border-r border-white/5 bg-navy-900 lg:sticky lg:top-0 lg:h-screen">
         <div className="px-6 py-6">
