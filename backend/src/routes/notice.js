@@ -14,7 +14,6 @@ const COLLECTION = 'notice'
  */
 const DEFAULT_NOTICE = {
   active: false,
-  title: '',
   image: '',
   imagePublicId: '',
   linkUrl: '',
@@ -48,15 +47,14 @@ router.get('/', async (_req, res, next) => {
 
 /**
  * PUT /api/notice — admin. Multipart so the artwork can ride along.
- * Fields: active ('true'/'false'), title, linkUrl, startsAt, endsAt, image.
+ * Fields: active ('true'/'false'), linkUrl, startsAt, endsAt, image.
  */
 router.put('/', requireAdmin, uploadImage.single('image'), async (req, res, next) => {
   try {
     const notice = await load(COLLECTION, DEFAULT_NOTICE)
-    const { active, title, linkUrl, startsAt, endsAt } = req.body
+    const { active, linkUrl, startsAt, endsAt } = req.body
 
     if (active !== undefined) notice.active = active === 'true' || active === true
-    if (title !== undefined) notice.title = title.trim()
     if (linkUrl !== undefined) notice.linkUrl = linkUrl.trim()
     if (startsAt !== undefined) notice.startsAt = startsAt.trim()
     if (endsAt !== undefined) notice.endsAt = endsAt.trim()

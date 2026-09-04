@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   FileText,
@@ -20,10 +20,17 @@ import {
   ShieldCheck,
   AlertTriangle,
   Megaphone,
+  Pencil,
+  Percent,
+  ArrowUp,
+  ArrowDown,
+  RotateCcw,
   X,
 } from 'lucide-react'
 import { api, getToken, setToken, clearToken } from '../lib/api'
 import { PERIODS } from '../lib/reportStore'
+import { FALLBACK_RATES, getRates } from '../lib/rateStore'
+import { featured as starterFeatured, posts as starterPosts } from '../data/posts'
 import manokamanaLogo from '../assets/images/manokamana-logo.png'
 import loginBackdrop from '../assets/images/zaxis-140h-ultra.webp'
 import vivekImg from '../assets/images/vivek-dugar.webp'
@@ -479,14 +486,40 @@ function ReportsPanel({ onAuthFail }) {
   const [reports, setReports] = useState([])
   const [form, setForm] = useState(emptyReport)
   const [file, setFile] = useState(null)
+  // Id of the report being edited; null means the form publishes a new one.
+  const [editing, setEditing] = useState(null)
+  const [hasFile, setHasFile] = useState(false)
   const [busy, setBusy] = useState(false)
   const [msg, notify] = useNotice()
   const [confirmDialog, confirm] = useConfirm()
+  const formRef = useRef(null)
 
   const refresh = () => api.getReports().then(setReports).catch(() => {})
   useEffect(() => {
     refresh()
   }, [])
+
+  function startEdit(r) {
+    setEditing(r.id)
+    setForm({
+      title: r.title || '',
+      year: r.year || new Date().getFullYear(),
+      period: r.period || 'Annual',
+      notes: r.notes || '',
+      publishedAt: r.publishedAt || '',
+    })
+    setFile(null)
+    setHasFile(Boolean(r.fileUrl))
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  function cancelEdit() {
+    setEditing(null)
+    setForm(emptyReport)
+    setFile(null)
+    setHasFile(false)
+    formRef.current?.reset()
+  }
 
   async function submit(e) {
     e.preventDefault()
@@ -494,12 +527,17 @@ function ReportsPanel({ onAuthFail }) {
     try {
       const fd = new FormData()
       Object.entries(form).forEach(([k, v]) => fd.append(k, v))
+      // No file picked while editing = keep the PDF already uploaded.
       if (file) fd.append('file', file)
-      await api.createReport(fd)
-      setForm(emptyReport)
-      setFile(null)
-      e.target.reset()
-      notify('Report published')
+
+      if (editing) {
+        await api.updateReport(editing, fd)
+        notify('Changes saved')
+      } else {
+        await api.createReport(fd)
+        notify('Report published')
+      }
+      cancelEdit()
       refresh()
     } catch (err) {
       if (/log in/i.test(err.message)) return onAuthFail()
@@ -517,6 +555,7 @@ function ReportsPanel({ onAuthFail }) {
     if (!ok) return
     try {
       await api.deleteReport(id)
+      if (editing === id) cancelEdit()
       notify('Report deleted')
       refresh()
     } catch (err) {
@@ -531,10 +570,26 @@ function ReportsPanel({ onAuthFail }) {
       {confirmDialog}
       {/* Publish form */}
       <form
+        ref={formRef}
         onSubmit={submit}
-        className="h-fit space-y-4 rounded-3xl border border-black/5 bg-white p-6"
+        className={`h-fit space-y-4 rounded-3xl border bg-white p-6 ${
+          editing ? 'border-brand-500/40 ring-1 ring-brand-500/20' : 'border-black/5'
+        }`}
       >
-        <h2 className="font-display text-lg font-extrabold text-navy-900">Publish a report</h2>
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="font-display text-lg font-extrabold text-navy-900">
+            {editing ? 'Edit report' : 'Publish a report'}
+          </h2>
+          {editing && (
+            <button
+              type="button"
+              onClick={cancelEdit}
+              className="inline-flex items-center gap-1.5 rounded-full bg-navy-900/5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-navy-900/60 transition-colors hover:text-navy-900"
+            >
+              <X className="h-3.5 w-3.5" /> Cancel
+            </button>
+          )}
+        </div>
         <Field label="Title">
           <input value={form.title} onChange={set('title')} className={inputCls} required />
         </Field>
@@ -564,9 +619,17 @@ function ReportsPanel({ onAuthFail }) {
             className="text-sm text-navy-900/70 file:mr-3 file:rounded-full file:border-0 file:bg-navy-900 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
           />
         </Field>
+        {editing && (
+          <p className="-mt-2 text-xs text-navy-900/45">
+            {hasFile
+              ? 'Leave this empty to keep the PDF already attached.'
+              : 'This report has no PDF attached yet.'}
+          </p>
+        )}
         <Notice msg={msg} />
         <Button type="submit" busy={busy}>
-          <UploadCloud className="h-4 w-4" /> Publish
+          <UploadCloud className="h-4 w-4" />
+          {editing ? 'Save changes' : 'Publish'}
         </Button>
       </form>
 
@@ -581,16 +644,35 @@ function ReportsPanel({ onAuthFail }) {
         {reports.map((r) => (
           <div
             key={r.id}
-            className="flex items-center gap-4 rounded-2xl border border-black/5 bg-white px-5 py-4"
+            className={`flex items-center gap-4 rounded-2xl border bg-white px-5 py-4 ${
+              editing === r.id
+                ? 'border-brand-500/40 ring-1 ring-brand-500/20'
+                : 'border-black/5'
+            }`}
           >
             <FileText className="h-5 w-5 shrink-0 text-brand-500" />
             <div className="min-w-0 flex-1">
               <p className="truncate font-semibold text-navy-900">{r.title}</p>
               <p className="text-xs text-navy-900/50">
-                FY {r.year} · {r.period} · {r.publishedAt}
-                {r.fileUrl ? ' · PDF attached' : ' · no file'}
+                {editing === r.id ? (
+                  <span className="font-bold uppercase tracking-wider text-brand-500">
+                    Editing…
+                  </span>
+                ) : (
+                  <>
+                    FY {r.year} · {r.period} · {r.publishedAt}
+                    {r.fileUrl ? ' · PDF attached' : ' · no file'}
+                  </>
+                )}
               </p>
             </div>
+            <button
+              onClick={() => startEdit(r)}
+              className="rounded-full p-2 text-navy-900/40 transition-colors hover:bg-navy-900/5 hover:text-navy-900"
+              title="Edit"
+            >
+              <Pencil className="h-4 w-4" />
+            </button>
             <button
               onClick={() => remove(r.id)}
               className="rounded-full p-2 text-navy-900/40 transition-colors hover:bg-red-50 hover:text-red-600"
@@ -610,6 +692,13 @@ function ReportsPanel({ onAuthFail }) {
 const emptyPost = { title: '', category: 'Guides', date: '', excerpt: '', content: '', featured: false }
 
 /**
+ * The articles that ship bundled with the site. They render on /blog but
+ * aren't in the backend, so they can't be edited until they're adopted — see
+ * the import button in BlogPanel and POST /api/posts/import.
+ */
+const STARTER_POSTS = [starterFeatured, ...starterPosts]
+
+/**
  * The body editor is plain text: blank lines split paragraphs and lines
  * starting with "## " become section headings.
  */
@@ -625,18 +714,52 @@ function contentToBlocks(content) {
     )
 }
 
+/** The inverse, so a published post can be loaded back into the editor. */
+function blocksToContent(body) {
+  return (body || [])
+    .map((b) => (b.type === 'h2' ? `## ${b.text}` : b.text))
+    .join('\n\n')
+}
+
 function BlogPanel({ onAuthFail }) {
   const [posts, setPosts] = useState([])
   const [form, setForm] = useState(emptyPost)
   const [image, setImage] = useState(null)
+  // Slug of the post being edited; null means the form publishes a new one.
+  const [editing, setEditing] = useState(null)
+  const [currentImage, setCurrentImage] = useState('')
   const [busy, setBusy] = useState(false)
   const [msg, notify] = useNotice()
   const [confirmDialog, confirm] = useConfirm()
+  const formRef = useRef(null)
 
   const refresh = () => api.getPosts().then(setPosts).catch(() => {})
   useEffect(() => {
     refresh()
   }, [])
+
+  function startEdit(post) {
+    setEditing(post.slug)
+    setForm({
+      title: post.title || '',
+      category: post.category || 'Guides',
+      date: post.date || '',
+      excerpt: post.excerpt || '',
+      content: blocksToContent(post.body),
+      featured: Boolean(post.featured),
+    })
+    setImage(null)
+    setCurrentImage(post.image || '')
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  function cancelEdit() {
+    setEditing(null)
+    setForm(emptyPost)
+    setImage(null)
+    setCurrentImage('')
+    formRef.current?.reset()
+  }
 
   async function submit(e) {
     e.preventDefault()
@@ -651,12 +774,44 @@ function BlogPanel({ onAuthFail }) {
       fd.append('excerpt', form.excerpt)
       fd.append('body', JSON.stringify(blocks))
       fd.append('featured', String(form.featured))
+      // No file picked while editing = keep the cover image already uploaded.
       if (image) fd.append('image', image)
-      await api.createPost(fd)
-      setForm(emptyPost)
-      setImage(null)
-      e.target.reset()
-      notify('Post published')
+
+      if (editing) {
+        await api.updatePost(editing, fd)
+        notify('Changes saved')
+      } else {
+        await api.createPost(fd)
+        notify('Post published')
+      }
+      cancelEdit()
+      refresh()
+    } catch (err) {
+      if (/log in/i.test(err.message)) return onAuthFail()
+      notify(err.message, 'error')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  /** Adopt the bundled starter articles so they can be edited here. */
+  async function importStarters() {
+    const ok = await confirm({
+      title: 'Make the starter articles editable?',
+      message: `${missing.length} article${
+        missing.length === 1 ? '' : 's'
+      } bundled with the site will be copied into the dashboard, where you can edit or delete them. The blog keeps reading exactly the same to visitors.`,
+      confirmLabel: 'Copy them over',
+    })
+    if (!ok) return
+    setBusy(true)
+    try {
+      const { imported } = await api.importPosts(missing)
+      notify(
+        imported > 0
+          ? `${imported} article${imported === 1 ? '' : 's'} ready to edit`
+          : 'Nothing new to copy over',
+      )
       refresh()
     } catch (err) {
       if (/log in/i.test(err.message)) return onAuthFail()
@@ -674,6 +829,7 @@ function BlogPanel({ onAuthFail }) {
     if (!ok) return
     try {
       await api.deletePost(slug)
+      if (editing === slug) cancelEdit()
       notify('Post deleted')
       refresh()
     } catch (err) {
@@ -684,12 +840,41 @@ function BlogPanel({ onAuthFail }) {
   const set = (k) => (e) =>
     setForm({ ...form, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value })
 
+  // Bundled articles that aren't in the backend yet, so aren't editable here.
+  const missing = STARTER_POSTS.filter((s) => !posts.some((p) => p.slug === s.slug))
+
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,480px)_1fr]">
       {confirmDialog}
       {/* Write form */}
-      <form onSubmit={submit} className="h-fit space-y-4 rounded-3xl border border-black/5 bg-white p-6">
-        <h2 className="font-display text-lg font-extrabold text-navy-900">Write a post</h2>
+      <form
+        ref={formRef}
+        onSubmit={submit}
+        className={`h-fit space-y-4 rounded-3xl border bg-white p-6 ${
+          editing ? 'border-brand-500/40 ring-1 ring-brand-500/20' : 'border-black/5'
+        }`}
+      >
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="font-display text-lg font-extrabold text-navy-900">
+            {editing ? 'Edit post' : 'Write a post'}
+          </h2>
+          {editing && (
+            <button
+              type="button"
+              onClick={cancelEdit}
+              className="inline-flex items-center gap-1.5 rounded-full bg-navy-900/5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-navy-900/60 transition-colors hover:text-navy-900"
+            >
+              <X className="h-3.5 w-3.5" /> Cancel
+            </button>
+          )}
+        </div>
+        {editing && (
+          <p className="rounded-2xl bg-navy-900/[0.03] px-4 py-3 text-sm text-navy-900/60">
+            Editing <span className="font-semibold text-navy-900">/blog/{editing}</span>. The
+            web address stays the same even if you change the title, so existing links keep
+            working.
+          </p>
+        )}
         <Field label="Title">
           <input value={form.title} onChange={set('title')} className={inputCls} required />
         </Field>
@@ -715,36 +900,88 @@ function BlogPanel({ onAuthFail }) {
           />
         </Field>
         <Field label="Cover image">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setImage(e.target.files[0] || null)}
-            className="text-sm text-navy-900/70 file:mr-3 file:rounded-full file:border-0 file:bg-navy-900 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
-          />
+          <div className="flex items-center gap-3">
+            {editing && currentImage && !image && (
+              <img
+                src={currentImage}
+                alt=""
+                className="h-12 w-16 shrink-0 rounded-lg object-cover"
+              />
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImage(e.target.files[0] || null)}
+              className="min-w-0 text-sm text-navy-900/70 file:mr-3 file:rounded-full file:border-0 file:bg-navy-900 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
+            />
+          </div>
         </Field>
+        {editing && (
+          <p className="-mt-2 text-xs text-navy-900/45">
+            Leave this empty to keep the current cover image.
+          </p>
+        )}
         <label className="flex items-center gap-2 text-sm font-semibold text-navy-900">
           <input type="checkbox" checked={form.featured} onChange={set('featured')} />
           Make this the featured story
         </label>
         <Notice msg={msg} />
         <Button type="submit" busy={busy}>
-          <UploadCloud className="h-4 w-4" /> Publish post
+          <UploadCloud className="h-4 w-4" />
+          {editing ? 'Save changes' : 'Publish post'}
         </Button>
       </form>
 
       {/* Existing */}
       <div className="space-y-3">
         <h2 className="font-display text-lg font-extrabold text-navy-900">
-          Published ({posts.length})
+          Editable posts ({posts.length})
         </h2>
-        {posts.length === 0 && (
+
+        {/* The bundled articles are on the site but not in the dashboard, so
+            they can't be edited until they're copied over. */}
+        {missing.length > 0 && (
+          <div className="rounded-2xl border border-brand-500/25 bg-brand-50/50 p-5">
+            <p className="font-display text-sm font-extrabold text-navy-900">
+              {missing.length} article{missing.length === 1 ? '' : 's'} on the blog can&apos;t
+              be edited yet
+            </p>
+            <p className="mt-1.5 text-sm leading-relaxed text-navy-900/60">
+              These came bundled with the site rather than being published here. Copy them
+              into the dashboard once and you can edit or delete them like any other post.
+            </p>
+            <ul className="mt-3 space-y-1">
+              {missing.map((s) => (
+                <li key={s.slug} className="truncate text-xs text-navy-900/50">
+                  · {s.title}
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              onClick={importStarters}
+              disabled={busy}
+              className="mt-4 inline-flex items-center gap-2 rounded-full bg-navy-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-navy-800 disabled:opacity-50"
+            >
+              <Pencil className="h-4 w-4" /> Make them editable
+            </button>
+          </div>
+        )}
+
+        {posts.length === 0 && missing.length === 0 && (
           <p className="text-sm text-navy-900/50">
-            No posts published from the dashboard yet. The starter articles bundled with the
-            site stay visible either way.
+            No posts published from the dashboard yet.
           </p>
         )}
         {posts.map((p) => (
-          <div key={p.slug} className="flex items-center gap-4 rounded-2xl border border-black/5 bg-white px-5 py-4">
+          <div
+            key={p.slug}
+            className={`flex items-center gap-4 rounded-2xl border bg-white px-5 py-4 ${
+              editing === p.slug
+                ? 'border-brand-500/40 ring-1 ring-brand-500/20'
+                : 'border-black/5'
+            }`}
+          >
             {p.image ? (
               <img src={p.image} alt="" className="h-12 w-16 shrink-0 rounded-lg object-cover" />
             ) : (
@@ -756,9 +993,24 @@ function BlogPanel({ onAuthFail }) {
                 {p.title}
               </p>
               <p className="text-xs text-navy-900/50">
-                {p.category} · {p.date} · /blog/{p.slug}
+                {editing === p.slug ? (
+                  <span className="font-bold uppercase tracking-wider text-brand-500">
+                    Editing…
+                  </span>
+                ) : (
+                  <>
+                    {p.category} · {p.date} · /blog/{p.slug}
+                  </>
+                )}
               </p>
             </div>
+            <button
+              onClick={() => startEdit(p)}
+              className="rounded-full p-2 text-navy-900/40 transition-colors hover:bg-navy-900/5 hover:text-navy-900"
+              title="Edit"
+            >
+              <Pencil className="h-4 w-4" />
+            </button>
             <button
               onClick={() => remove(p.slug)}
               className="rounded-full p-2 text-navy-900/40 transition-colors hover:bg-red-50 hover:text-red-600"
@@ -1020,22 +1272,47 @@ const emptyOpening = { title: '', dept: '', location: 'Kamaladi, Kathmandu', typ
 function CareersPanel({ onAuthFail }) {
   const [openings, setOpenings] = useState([])
   const [form, setForm] = useState(emptyOpening)
+  // Id of the opening being edited; null means the form posts a new one.
+  const [editing, setEditing] = useState(null)
   const [busy, setBusy] = useState(false)
   const [msg, notify] = useNotice()
   const [confirmDialog, confirm] = useConfirm()
+  const formRef = useRef(null)
 
   const refresh = () => api.getOpenings().then(setOpenings).catch(() => {})
   useEffect(() => {
     refresh()
   }, [])
 
+  function startEdit(o) {
+    setEditing(o.id)
+    setForm({
+      title: o.title || '',
+      dept: o.dept || '',
+      location: o.location || '',
+      type: o.type || 'Full-time',
+      desc: o.desc || '',
+    })
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  function cancelEdit() {
+    setEditing(null)
+    setForm(emptyOpening)
+  }
+
   async function submit(e) {
     e.preventDefault()
     setBusy(true)
     try {
-      await api.createOpening(form)
-      setForm(emptyOpening)
-      notify('Opening published')
+      if (editing) {
+        await api.updateOpening(editing, form)
+        notify('Changes saved')
+      } else {
+        await api.createOpening(form)
+        notify('Opening published')
+      }
+      cancelEdit()
       refresh()
     } catch (err) {
       if (/log in/i.test(err.message)) return onAuthFail()
@@ -1053,6 +1330,7 @@ function CareersPanel({ onAuthFail }) {
     if (!ok) return
     try {
       await api.deleteOpening(id)
+      if (editing === id) cancelEdit()
       notify('Opening deleted')
       refresh()
     } catch (err) {
@@ -1066,8 +1344,27 @@ function CareersPanel({ onAuthFail }) {
     <div className="grid gap-8 lg:grid-cols-[minmax(0,420px)_1fr]">
       {confirmDialog}
       {/* Publish form */}
-      <form onSubmit={submit} className="h-fit space-y-4 rounded-3xl border border-black/5 bg-white p-6">
-        <h2 className="font-display text-lg font-extrabold text-navy-900">Post an opening</h2>
+      <form
+        ref={formRef}
+        onSubmit={submit}
+        className={`h-fit space-y-4 rounded-3xl border bg-white p-6 ${
+          editing ? 'border-brand-500/40 ring-1 ring-brand-500/20' : 'border-black/5'
+        }`}
+      >
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="font-display text-lg font-extrabold text-navy-900">
+            {editing ? 'Edit opening' : 'Post an opening'}
+          </h2>
+          {editing && (
+            <button
+              type="button"
+              onClick={cancelEdit}
+              className="inline-flex items-center gap-1.5 rounded-full bg-navy-900/5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-navy-900/60 transition-colors hover:text-navy-900"
+            >
+              <X className="h-3.5 w-3.5" /> Cancel
+            </button>
+          )}
+        </div>
         <Field label="Job title">
           <input value={form.title} onChange={set('title')} className={inputCls} required />
         </Field>
@@ -1087,7 +1384,8 @@ function CareersPanel({ onAuthFail }) {
         </Field>
         <Notice msg={msg} />
         <Button type="submit" busy={busy}>
-          <UploadCloud className="h-4 w-4" /> Publish opening
+          <UploadCloud className="h-4 w-4" />
+          {editing ? 'Save changes' : 'Publish opening'}
         </Button>
       </form>
 
@@ -1103,14 +1401,34 @@ function CareersPanel({ onAuthFail }) {
           </p>
         )}
         {openings.map((o) => (
-          <div key={o.id} className="flex items-center gap-4 rounded-2xl border border-black/5 bg-white px-5 py-4">
+          <div
+            key={o.id}
+            className={`flex items-center gap-4 rounded-2xl border bg-white px-5 py-4 ${
+              editing === o.id
+                ? 'border-brand-500/40 ring-1 ring-brand-500/20'
+                : 'border-black/5'
+            }`}
+          >
             <Briefcase className="h-5 w-5 shrink-0 text-brand-500" />
             <div className="min-w-0 flex-1">
               <p className="truncate font-semibold text-navy-900">{o.title}</p>
               <p className="text-xs text-navy-900/50">
-                {[o.dept, o.location, o.type].filter(Boolean).join(' · ')}
+                {editing === o.id ? (
+                  <span className="font-bold uppercase tracking-wider text-brand-500">
+                    Editing…
+                  </span>
+                ) : (
+                  [o.dept, o.location, o.type].filter(Boolean).join(' · ')
+                )}
               </p>
             </div>
+            <button
+              onClick={() => startEdit(o)}
+              className="rounded-full p-2 text-navy-900/40 transition-colors hover:bg-navy-900/5 hover:text-navy-900"
+              title="Edit"
+            >
+              <Pencil className="h-4 w-4" />
+            </button>
             <button
               onClick={() => remove(o.id)}
               className="rounded-full p-2 text-navy-900/40 transition-colors hover:bg-red-50 hover:text-red-600"
@@ -1129,7 +1447,6 @@ function CareersPanel({ onAuthFail }) {
 
 const emptyNotice = {
   active: false,
-  title: '',
   linkUrl: '',
   startsAt: '',
   endsAt: '',
@@ -1176,7 +1493,6 @@ function NoticePanel({ onAuthFail }) {
     try {
       const fd = new FormData()
       fd.append('active', String(form.active))
-      fd.append('title', form.title)
       fd.append('linkUrl', form.linkUrl)
       fd.append('startsAt', form.startsAt)
       fd.append('endsAt', form.endsAt)
@@ -1246,15 +1562,6 @@ function NoticePanel({ onAuthFail }) {
           />
         </Field>
 
-        <Field label="Short description">
-          <input
-            value={form.title}
-            onChange={set('title')}
-            className={inputCls}
-            placeholder="e.g. 35-day land purchase tender notice"
-          />
-        </Field>
-
         <Field label="Link on click">
           <input
             value={form.linkUrl}
@@ -1312,11 +1619,58 @@ function NoticePanel({ onAuthFail }) {
         </h2>
         {shown ? (
           <div className="rounded-3xl border border-black/5 bg-navy-900/90 p-6">
-            <div className="relative mx-auto w-fit max-w-full bg-white shadow-2xl">
-              <span className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-navy-900 shadow ring-1 ring-black/5">
-                <X className="h-4 w-4" strokeWidth={2.5} />
-              </span>
-              <img src={shown} alt="" className="block max-h-[60vh] w-auto max-w-full object-contain" />
+            {/* Mirrors src/components/NoticePopup.jsx — keep the two in step */}
+            <div className="mx-auto w-full bg-white shadow-2xl">
+              <div className="flex items-center gap-5 border-b-2 border-brand-500 px-7 py-3">
+                <img
+                  src={manokamanaLogo}
+                  alt=""
+                  className="h-11 w-auto shrink-0 object-contain"
+                />
+                <span className="h-8 w-px shrink-0 bg-navy-900/10" />
+                <p className="flex min-w-0 flex-1 items-center gap-2.5 font-mono text-xs font-bold uppercase tracking-[0.28em] text-brand-500">
+                  Notice
+                  <span aria-hidden="true" className="text-navy-900/20">
+                    /
+                  </span>
+                  <span className="font-medium tracking-[0.14em] text-navy-900/45">
+                    {new Date().toLocaleDateString('en-GB', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
+                  </span>
+                </p>
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-navy-900/5 text-navy-900/60 ring-1 ring-navy-900/10">
+                  <X className="h-5 w-5" strokeWidth={2.5} />
+                </span>
+              </div>
+
+              <div className="bg-navy-900/[0.04] p-3">
+                <div className="bg-white ring-1 ring-navy-900/5">
+                  <img
+                    src={shown}
+                    alt=""
+                    className="block max-h-[52vh] w-full object-contain"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between gap-3 border-t border-navy-900/10 px-7 py-3.5">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-navy-900/35">
+                  Manokamana Hire Purchase Pvt. Ltd.
+                </p>
+                <div className="flex items-center gap-2">
+                  {form.linkUrl && (
+                    <span className="inline-flex items-center gap-2 rounded-full bg-brand-500 px-5 py-2 text-sm font-semibold text-white">
+                      Read the full notice ↗
+                    </span>
+                  )}
+                  <span className="px-4 py-2 text-sm font-semibold text-navy-900/60">
+                    Dismiss
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         ) : (
@@ -1329,6 +1683,357 @@ function NoticePanel({ onAuthFail }) {
   )
 }
 
+/* ── Interest rates panel ──────────────────────────────────────── */
+
+const emptyRow = { particular: '', value: '', tier: 'charge' }
+
+/** Form state mirrors the API record, with the numbers held as strings. */
+function toForm(r) {
+  return {
+    publishRate: String(r.publishRate ?? ''),
+    maxPremium: String(r.maxPremium ?? ''),
+    effectiveFrom: r.effectiveFrom || '',
+    effectiveFromBs: r.effectiveFromBs || '',
+    schedule: (r.schedule || []).map((row) => ({ ...emptyRow, ...row })),
+  }
+}
+
+/**
+ * The published interest rate and charges sheet at /interest-rates.
+ *
+ * One record, edited whole and saved in one go — the way the company
+ * republishes the schedule when the board revises it. Rows marked "Rate" are
+ * printed as large figures on the page; "Charge" rows sit in the compact block
+ * beneath them.
+ */
+function RatesPanel({ onAuthFail }) {
+  const [form, setForm] = useState(() => toForm(FALLBACK_RATES))
+  const [loaded, setLoaded] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [msg, notify] = useNotice()
+  const [confirmDialog, confirm] = useConfirm()
+
+  useEffect(() => {
+    // getRates() already falls back to the bundled sheet, so the editor is
+    // usable even before anything has been published.
+    getRates()
+      .then((r) => setForm(toForm(r)))
+      .finally(() => setLoaded(true))
+  }, [])
+
+  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value })
+
+  const maxRate =
+    Number(form.publishRate) + Number(form.maxPremium) || Number(form.publishRate) || 0
+
+  function setRow(i, key, value) {
+    const schedule = form.schedule.map((row, idx) =>
+      idx === i ? { ...row, [key]: value } : row,
+    )
+    setForm({ ...form, schedule })
+  }
+
+  function addRow() {
+    setForm({ ...form, schedule: [...form.schedule, { ...emptyRow }] })
+  }
+
+  async function removeRow(i) {
+    const ok = await confirm({
+      title: 'Remove this row?',
+      message: `“${form.schedule[i].particular || 'Untitled row'}” will be dropped from the sheet when you save.`,
+      confirmLabel: 'Remove row',
+    })
+    if (!ok) return
+    setForm({ ...form, schedule: form.schedule.filter((_, idx) => idx !== i) })
+  }
+
+  function moveRow(i, dir) {
+    const j = i + dir
+    if (j < 0 || j >= form.schedule.length) return
+    const schedule = [...form.schedule]
+    ;[schedule[i], schedule[j]] = [schedule[j], schedule[i]]
+    setForm({ ...form, schedule })
+  }
+
+  async function save(e) {
+    e.preventDefault()
+    if (form.schedule.length === 0) {
+      return notify('Add at least one row to the schedule', 'error')
+    }
+    const blank = form.schedule.findIndex((r) => !r.particular.trim() || !r.value.trim())
+    if (blank !== -1) {
+      return notify(`Row ${blank + 1}: fill in both the particular and its rate`, 'error')
+    }
+
+    setBusy(true)
+    try {
+      const saved = await api.saveRates({
+        publishRate: form.publishRate,
+        maxPremium: form.maxPremium,
+        effectiveFrom: form.effectiveFrom,
+        effectiveFromBs: form.effectiveFromBs,
+        schedule: form.schedule,
+      })
+      setForm(toForm(saved))
+      notify('Interest rates updated on the website')
+    } catch (err) {
+      if (/log in/i.test(err.message)) return onAuthFail()
+      notify(err.message, 'error')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function reset() {
+    const ok = await confirm({
+      title: 'Restore the built-in schedule?',
+      message:
+        'Every rate, charge and note goes back to the original published sheet. Your current edits will be lost.',
+      confirmLabel: 'Restore',
+    })
+    if (!ok) return
+    try {
+      const restored = await api.resetRates()
+      setForm(toForm(restored))
+      notify('Built-in schedule restored')
+    } catch (err) {
+      if (/log in/i.test(err.message)) return onAuthFail()
+      notify(err.message, 'error')
+    }
+  }
+
+  return (
+    <form onSubmit={save} className="grid gap-8 lg:grid-cols-[minmax(0,380px)_1fr]">
+      {confirmDialog}
+
+      {/* ── Rate basis & notes ── */}
+      <div className="h-fit space-y-4 rounded-3xl border border-black/5 bg-white p-6">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="font-display text-lg font-extrabold text-navy-900">Rate basis</h2>
+          {!loaded && <Loader2 className="h-4 w-4 animate-spin text-navy-900/30" />}
+        </div>
+        <p className="text-sm leading-relaxed text-navy-900/55">
+          These two figures drive the sentence at the top of the Interest Rates page.
+        </p>
+
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Publish rate (%)">
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              max="100"
+              value={form.publishRate}
+              onChange={set('publishRate')}
+              className={inputCls}
+              required
+            />
+          </Field>
+          <Field label="Max premium (%)">
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              max="100"
+              value={form.maxPremium}
+              onChange={set('maxPremium')}
+              className={inputCls}
+              required
+            />
+          </Field>
+        </div>
+        <p className="-mt-1 rounded-2xl bg-navy-900/[0.03] px-4 py-3 text-sm text-navy-900/60">
+          Interest is never charged above{' '}
+          <span className="font-bold text-navy-900">
+            {Math.round(maxRate * 100) / 100}%
+          </span>{' '}
+          per annum.
+        </p>
+
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Effective from (BS)">
+            <input
+              value={form.effectiveFromBs}
+              onChange={set('effectiveFromBs')}
+              className={inputCls}
+              placeholder="Shrawan 1, 2083"
+            />
+          </Field>
+          <Field label="Same date (AD)">
+            <input
+              type="date"
+              value={form.effectiveFrom}
+              onChange={set('effectiveFrom')}
+              className={inputCls}
+            />
+          </Field>
+        </div>
+        <p className="-mt-1 text-xs text-navy-900/45">
+          Printed above the sheet. Clear both to publish it without a date.
+        </p>
+
+        <Notice msg={msg} />
+
+        <div className="flex flex-wrap items-center gap-3">
+          <Button type="submit" busy={busy}>
+            <UploadCloud className="h-4 w-4" /> Save &amp; publish
+          </Button>
+          <button
+            type="button"
+            onClick={reset}
+            className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-navy-900/60 transition-colors hover:bg-navy-900/5 hover:text-navy-900"
+          >
+            <RotateCcw className="h-4 w-4" /> Restore original
+          </button>
+        </div>
+      </div>
+
+      {/* ── The rows ── */}
+      <div className="space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="font-display text-lg font-extrabold text-navy-900">
+            The sheet ({form.schedule.length} rows)
+          </h2>
+          <button
+            type="button"
+            onClick={addRow}
+            className="inline-flex items-center gap-2 rounded-full border border-navy-900/15 px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:border-brand-500 hover:text-brand-600"
+          >
+            <Plus className="h-4 w-4" /> Add row
+          </button>
+        </div>
+        <p className="text-sm text-navy-900/55">
+          <span className="font-semibold text-navy-900">Rate</span> rows print as big red
+          figures; <span className="font-semibold text-navy-900">charge</span> rows print
+          small below them. Drag isn&apos;t needed — use the arrows to reorder.
+        </p>
+
+        {form.schedule.map((row, i) => (
+          <div
+            key={i}
+            className="rounded-2xl border border-black/5 bg-white p-4 sm:flex sm:items-start sm:gap-4"
+          >
+            <span className="mt-2.5 hidden font-mono text-xs text-navy-900/35 sm:block">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+
+            <div className="min-w-0 flex-1 space-y-3">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Field label="Particular">
+                  <input
+                    value={row.particular}
+                    onChange={(e) => setRow(i, 'particular', e.target.value)}
+                    className={inputCls}
+                    placeholder="e.g. Service Charges"
+                  />
+                </Field>
+                <Field label="Rate / charge">
+                  <input
+                    value={row.value}
+                    onChange={(e) => setRow(i, 'value', e.target.value)}
+                    className={inputCls}
+                    placeholder="e.g. 1% of loan amount"
+                  />
+                </Field>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <span className={labelCls}>Print as</span>
+                {[
+                  { id: 'rate', label: 'Rate' },
+                  { id: 'charge', label: 'Charge' },
+                ].map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setRow(i, 'tier', t.id)}
+                    className={`rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${
+                      row.tier === t.id
+                        ? 'bg-navy-900 text-white'
+                        : 'bg-navy-900/5 text-navy-900/50 hover:text-navy-900'
+                    }`}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-3 flex items-center gap-1 sm:mt-2 sm:flex-col">
+              <button
+                type="button"
+                onClick={() => moveRow(i, -1)}
+                disabled={i === 0}
+                className="rounded-full p-1.5 text-navy-900/40 transition-colors hover:bg-navy-900/5 hover:text-navy-900 disabled:opacity-30"
+                title="Move up"
+              >
+                <ArrowUp className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => moveRow(i, 1)}
+                disabled={i === form.schedule.length - 1}
+                className="rounded-full p-1.5 text-navy-900/40 transition-colors hover:bg-navy-900/5 hover:text-navy-900 disabled:opacity-30"
+                title="Move down"
+              >
+                <ArrowDown className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => removeRow(i)}
+                className="rounded-full p-1.5 text-navy-900/40 transition-colors hover:bg-red-50 hover:text-red-600"
+                title="Remove row"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        ))}
+
+        {form.schedule.length === 0 && (
+          <p className="rounded-2xl border border-dashed border-navy-900/15 px-6 py-10 text-center text-sm text-navy-900/50">
+            The sheet is empty. Add a row before saving.
+          </p>
+        )}
+
+        {/* Preview — the same hierarchy the public page prints */}
+        <h3 className="pt-4 font-display text-lg font-extrabold text-navy-900">Preview</h3>
+        <div className="overflow-hidden rounded-2xl border border-black/5 bg-white">
+          <p className="bg-brand-500 px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-white">
+            Rates &amp; charges
+            {form.effectiveFromBs && <> · effective {form.effectiveFromBs}</>}
+          </p>
+          {form.schedule.map((row, i) => (
+            <div
+              key={i}
+              className={`flex items-baseline justify-between gap-4 px-5 py-3 ${
+                i > 0 ? 'border-t border-navy-900/10' : ''
+              }`}
+            >
+              <span
+                className={`font-display font-extrabold text-navy-900 ${
+                  row.tier === 'rate' ? 'text-base' : 'text-sm'
+                }`}
+              >
+                {row.particular || <span className="text-navy-900/30">Untitled</span>}
+              </span>
+              <span
+                className={
+                  row.tier === 'rate'
+                    ? 'shrink-0 font-display text-xl font-extrabold text-brand-500'
+                    : 'shrink-0 font-mono text-xs font-bold text-navy-900'
+                }
+              >
+                {row.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </form>
+  )
+}
+
 /* ── Shell ─────────────────────────────────────────────────────── */
 
 const NAV = [
@@ -1337,6 +2042,7 @@ const NAV = [
   { id: 'team', label: 'Team', icon: Users, blurb: 'Board & management roster' },
   { id: 'careers', label: 'Careers', icon: Briefcase, blurb: 'Post & manage job openings' },
   { id: 'notice', label: 'Notice', icon: Megaphone, blurb: 'Popup notice shown to visitors' },
+  { id: 'rates', label: 'Rates', icon: Percent, blurb: 'Interest rate & charges sheet' },
 ]
 
 export default function Admin() {
@@ -1443,6 +2149,7 @@ export default function Admin() {
           {tab === 'team' && <TeamPanel onAuthFail={clearAuth} />}
           {tab === 'careers' && <CareersPanel onAuthFail={clearAuth} />}
           {tab === 'notice' && <NoticePanel onAuthFail={clearAuth} />}
+          {tab === 'rates' && <RatesPanel onAuthFail={clearAuth} />}
         </main>
       </div>
 

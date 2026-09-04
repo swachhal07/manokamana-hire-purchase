@@ -8,6 +8,7 @@ import postRoutes from './src/routes/posts.js'
 import teamRoutes from './src/routes/team.js'
 import careerRoutes from './src/routes/careers.js'
 import noticeRoutes from './src/routes/notice.js'
+import rateRoutes from './src/routes/rates.js'
 
 const app = express()
 
@@ -31,6 +32,7 @@ app.use('/api/posts', postRoutes)
 app.use('/api/team', teamRoutes)
 app.use('/api/careers', careerRoutes)
 app.use('/api/notice', noticeRoutes)
+app.use('/api/rates', rateRoutes)
 
 app.use((req, res) => res.status(404).json({ error: 'Not found' }))
 

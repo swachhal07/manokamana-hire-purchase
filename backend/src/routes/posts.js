@@ -97,6 +97,70 @@ router.post('/', requireAdmin, uploadImage.single('image'), async (req, res, nex
   }
 })
 
+/**
+ * POST /api/posts/import — admin. JSON: { posts: [{ slug, title, category,
+ * date, excerpt, body, featured }] }
+ *
+ * Adopts the starter articles that ship bundled in the frontend
+ * (src/data/posts.js) into this collection, so they become editable from the
+ * dashboard like any published post. Slugs already here are skipped, which
+ * makes the call safe to repeat.
+ *
+ * Cover images are deliberately NOT taken from the payload: bundled artwork
+ * is served from build-hashed asset paths that change on the next deploy. The
+ * frontend keeps showing the bundled image for these slugs until an admin
+ * uploads a real one.
+ */
+router.post('/import', requireAdmin, async (req, res, next) => {
+  try {
+    const incoming = Array.isArray(req.body?.posts) ? req.body.posts : null
+    if (!incoming) return res.status(400).json({ error: 'posts array is required' })
+    if (incoming.length > 50) {
+      return res.status(400).json({ error: 'Too many posts in one import' })
+    }
+
+    const posts = await load(COLLECTION, [])
+    const someoneFeatured = posts.some((p) => p.featured)
+
+    // Imported posts are older than anything published from the dashboard, so
+    // they sort below it while keeping their own source order.
+    const BASE = Date.parse('2000-01-01T00:00:00.000Z')
+
+    let imported = 0
+    let skipped = 0
+
+    incoming.forEach((raw, i) => {
+      const slug = slugify(String(raw?.slug || raw?.title || ''))
+      const title = String(raw?.title || '').trim()
+      const excerpt = String(raw?.excerpt || '').trim()
+      const body = parseBody(raw?.body)
+
+      if (!slug || !title || !excerpt || body.length === 0) return void skipped++
+      if (posts.some((p) => p.slug === slug)) return void skipped++
+
+      posts.push({
+        slug,
+        title,
+        category: String(raw?.category || 'Guides').trim(),
+        date: String(raw?.date || '').trim(),
+        excerpt,
+        readTime: estimateReadTime(body),
+        body,
+        featured: Boolean(raw?.featured) && !someoneFeatured && imported === 0,
+        createdAt: new Date(BASE - i * 60000).toISOString(),
+        image: '',
+        imagePublicId: '',
+      })
+      imported++
+    })
+
+    if (imported > 0) await save(COLLECTION, posts)
+    res.json({ imported, skipped })
+  } catch (err) {
+    next(err)
+  }
+})
+
 /** PUT /api/posts/:slug — admin */
 router.put('/:slug', requireAdmin, uploadImage.single('image'), async (req, res, next) => {
   try {

@@ -7,6 +7,7 @@ import dugarLogo from '../assets/images/dugar-logo.png'
 const navItems = [
   { label: 'Home', path: '/' },
   { label: 'Services', path: '/services' },
+  { label: 'Rates', path: '/interest-rates' },
   {
     label: 'About',
     children: [

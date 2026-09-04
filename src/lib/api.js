@@ -39,6 +39,7 @@ export const api = {
   getTeam: () => request('/team'),
   getOpenings: () => request('/careers'),
   getNotice: () => request('/notice'),
+  getRates: () => request('/rates'),
 
   /* ── Admin (multipart so files can ride along) ───────────────── */
 
@@ -49,6 +50,7 @@ export const api = {
   createPost: (fd) => request('/posts', { method: 'POST', auth: true, formData: fd }),
   updatePost: (slug, fd) => request(`/posts/${slug}`, { method: 'PUT', auth: true, formData: fd }),
   deletePost: (slug) => request(`/posts/${slug}`, { method: 'DELETE', auth: true }),
+  importPosts: (posts) => request('/posts/import', { method: 'POST', auth: true, body: { posts } }),
 
   updateTeamMember: (section, index, fd) =>
     request(`/team/${section}/${index}`, { method: 'PUT', auth: true, formData: fd }),
@@ -63,4 +65,7 @@ export const api = {
 
   saveNotice: (fd) => request('/notice', { method: 'PUT', auth: true, formData: fd }),
   clearNotice: () => request('/notice', { method: 'DELETE', auth: true }),
+
+  saveRates: (body) => request('/rates', { method: 'PUT', auth: true, body }),
+  resetRates: () => request('/rates', { method: 'DELETE', auth: true }),
 }
