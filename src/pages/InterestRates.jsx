@@ -88,33 +88,67 @@ export default function InterestRates() {
             className="animate-fade-up mt-12 lg:mt-14"
             style={{ animationDelay: '210ms' }}
           >
-            {/* Dateline — a reader's first question of any rate sheet is
-                "is this current?", so it sits directly above the figures.
-                Hidden entirely when no effective date has been published. */}
-            {dateline && (
-              <p className="mb-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center font-mono text-[13px] font-bold uppercase tracking-[0.18em] text-navy-900/55 sm:text-sm">
-                <span aria-hidden="true" className="h-px w-10 bg-navy-900/20" />
-                Effective from
-                <span className="text-brand-500">{dateline}</span>
-                {effectiveFrom && effectiveFromBs && (
-                  <time
-                    dateTime={effectiveFrom}
-                    className="font-normal text-navy-900/40"
-                  >
-                    (
-                    {new Date(effectiveFrom).toLocaleDateString('en-GB', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
-                    )
-                  </time>
-                )}
-                <span aria-hidden="true" className="h-px w-10 bg-navy-900/20" />
-              </p>
-            )}
-
             <div className="bg-white pb-2 shadow-[0_36px_70px_-32px_rgba(10,28,52,0.4)]">
+              {/* Dateline — a reader's first question of any rate sheet is
+                  "is this current?", so it rides on the sheet itself and
+                  travels with it wherever the table is printed or shared.
+                  Set on the paper rather than in a coloured band: a third
+                  bar of chrome above the red header fought the masthead,
+                  where a printed date line reads as the document's own
+                  issue date. Centred on one baseline: red mono label, BS
+                  date at display scale, AD date trailing it.
+                  Hidden entirely when no effective date has been published. */}
+              {dateline && (
+                <div className="flex flex-wrap items-baseline justify-center gap-x-4 gap-y-2 px-5 pb-4 pt-5 text-center">
+                  <p className="flex items-baseline gap-3">
+                    <span className="whitespace-nowrap font-mono text-[12px] font-bold uppercase tracking-[0.24em] text-brand-500 sm:text-[13px]">
+                      Effective from
+                    </span>
+                    <span className="flex items-baseline gap-2">
+                      <span className="font-display text-xl font-extrabold leading-none tracking-tight text-navy-900 sm:text-2xl">
+                        {dateline}
+                      </span>
+                      {/* Only meaningful once both calendars are shown —
+                          without the AD date beside it there is nothing to
+                          tell it apart from. */}
+                      {effectiveFrom && effectiveFromBs && (
+                        <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-navy-900/40">
+                          BS
+                        </span>
+                      )}
+                    </span>
+                  </p>
+                  {effectiveFrom && effectiveFromBs && (
+                    <p className="flex items-baseline gap-4">
+                      {/* Hairline rule between the two calendars — they are
+                          the same date in two systems, so they carry equal
+                          size and colour and the divider does all of the
+                          separating. Self-centre keeps it on the cap
+                          height. */}
+                      <span
+                        aria-hidden="true"
+                        className="h-6 w-px shrink-0 self-center bg-navy-900/20 sm:h-7"
+                      />
+                      <span className="flex items-baseline gap-2">
+                        <time
+                          dateTime={effectiveFrom}
+                          className="font-display text-xl font-extrabold leading-none tracking-tight text-navy-900 [font-variant-numeric:tabular-nums] sm:text-2xl"
+                        >
+                          {new Date(effectiveFrom).toLocaleDateString('en-GB', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                        </time>
+                        <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-navy-900/40">
+                          AD
+                        </span>
+                      </span>
+                    </p>
+                  )}
+                </div>
+              )}
+
               {/* The column header collapses away below `sm`, so the sheet
                   keeps its red masthead there in a single line. */}
               <p
