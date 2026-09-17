@@ -5,7 +5,6 @@ import manokamanaLogo from '../assets/images/manokamana-logo.png'
 const links = [
   { label: 'Home', to: '/' },
   { label: 'Services', to: '/services' },
-  { label: 'Interest Rates', to: '/interest-rates' },
   { label: 'About', to: '/about' },
   { label: 'Careers', to: '/careers' },
   { label: 'Contact', to: '/contact' },

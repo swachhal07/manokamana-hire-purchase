@@ -45,13 +45,6 @@ export const ROUTES = {
     priority: 0.9,
     changefreq: 'monthly',
   },
-  '/interest-rates': {
-    title: 'Interest Rates & Charges | Manokamana Hire Purchase',
-    description:
-      'Current hire purchase interest rates in Nepal by category — two-wheelers, cars, commercial vehicles, tractors and excavators — plus all fees and charges.',
-    priority: 0.9,
-    changefreq: 'monthly',
-  },
   '/about': {
     title: 'About Manokamana Hire Purchase | NRB-Licensed Lender',
     description:

@@ -39,7 +39,6 @@ export const api = {
   getTeam: () => request('/team'),
   getOpenings: () => request('/careers'),
   getNotice: () => request('/notice'),
-  getRates: () => request('/rates'),
 
   /* ── Admin (multipart so files can ride along) ───────────────── */
 
@@ -65,7 +64,4 @@ export const api = {
 
   saveNotice: (fd) => request('/notice', { method: 'PUT', auth: true, formData: fd }),
   clearNotice: () => request('/notice', { method: 'DELETE', auth: true }),
-
-  saveRates: (body) => request('/rates', { method: 'PUT', auth: true, body }),
-  resetRates: () => request('/rates', { method: 'DELETE', auth: true }),
 }

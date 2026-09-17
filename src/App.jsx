@@ -10,7 +10,6 @@ import Services from './pages/Services'
 import Careers from './pages/Careers'
 import Contact from './pages/Contact'
 import EmiCalculator from './pages/EmiCalculator'
-import InterestRates from './pages/InterestRates'
 import Reports from './pages/Reports'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
@@ -32,7 +31,6 @@ function App() {
         <Route path="/careers" element={<Careers />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/emi-calculator" element={<EmiCalculator />} />
-        <Route path="/interest-rates" element={<InterestRates />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
