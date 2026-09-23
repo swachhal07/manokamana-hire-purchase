@@ -21,10 +21,14 @@ import {
   AlertTriangle,
   Megaphone,
   Pencil,
+  Percent,
+  RotateCcw,
   X,
 } from 'lucide-react'
 import { api, getToken, setToken, clearToken } from '../lib/api'
 import { PERIODS } from '../lib/reportStore'
+import { FALLBACK_RATES, getRates, sortRates } from '../lib/rateStore'
+import { BS_MONTHS } from '../data/rates'
 import { featured as starterFeatured, posts as starterPosts } from '../data/posts'
 import manokamanaLogo from '../assets/images/manokamana-logo.png'
 import loginBackdrop from '../assets/images/zaxis-140h-ultra.webp'
@@ -1678,6 +1682,257 @@ function NoticePanel({ onAuthFail }) {
   )
 }
 
+/* ── Interest rates panel ──────────────────────────────────────── */
+
+/** Form rows mirror the API rows, with the numbers held as strings. */
+function toRows(r) {
+  return (r.baseRates || []).map((row) => ({
+    year: String(row.year ?? ''),
+    month: row.month || BS_MONTHS[0],
+    day: String(row.day ?? ''),
+    adDate: row.adDate || '',
+    rate: String(row.rate ?? ''),
+  }))
+}
+
+/**
+ * A new row for the month after the newest one, so adding next month's rate
+ * is mostly typing the day and the figure.
+ */
+function nextMonth(rows) {
+  const blank = { day: '', adDate: '', rate: '' }
+  const [newest] = sortRates(rows.filter((r) => r.year && BS_MONTHS.includes(r.month)))
+  if (!newest) return { ...blank, year: '', month: BS_MONTHS[0] }
+  const i = BS_MONTHS.indexOf(newest.month)
+  return i === BS_MONTHS.length - 1
+    ? { ...blank, year: String(Number(newest.year) + 1), month: BS_MONTHS[0] }
+    : { ...blank, year: String(newest.year), month: BS_MONTHS[i + 1] }
+}
+
+const rateGrid = 'sm:grid-cols-[88px_minmax(0,1.3fr)_72px_minmax(0,1.5fr)_minmax(0,1fr)_40px]'
+
+/**
+ * The monthly base rate table at /interest-rates.
+ *
+ * One record, edited whole and saved in one go. The site always lists the
+ * rates newest first, so there is no manual ordering — rows are sorted on
+ * save.
+ */
+function RatesPanel({ onAuthFail }) {
+  const [rows, setRows] = useState(() => toRows(FALLBACK_RATES))
+  const [loaded, setLoaded] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [msg, notify] = useNotice()
+  const [confirmDialog, confirm] = useConfirm()
+
+  useEffect(() => {
+    // getRates() already falls back to the bundled list, so the editor is
+    // usable even before anything has been published.
+    getRates()
+      .then((r) => setRows(toRows(r)))
+      .finally(() => setLoaded(true))
+  }, [])
+
+  function setRow(i, key, value) {
+    setRows(rows.map((row, idx) => (idx === i ? { ...row, [key]: value } : row)))
+  }
+
+  function addRow() {
+    setRows([nextMonth(rows), ...rows])
+  }
+
+  async function removeRow(i) {
+    const row = rows[i]
+    const ok = await confirm({
+      title: 'Remove this rate?',
+      message: `The rate for ${row.month} ${row.day ? `${row.day}, ` : ''}${row.year} will be dropped from the table when you save.`,
+      confirmLabel: 'Remove',
+    })
+    if (!ok) return
+    setRows(rows.filter((_, idx) => idx !== i))
+  }
+
+  async function save(e) {
+    e.preventDefault()
+    if (rows.length === 0) return notify('Add at least one rate before saving', 'error')
+    const blank = rows.findIndex(
+      (r) => !r.year.trim() || !r.day.trim() || r.rate.trim() === '',
+    )
+    if (blank !== -1) {
+      return notify(`Row ${blank + 1}: fill in the year, day and rate`, 'error')
+    }
+
+    setBusy(true)
+    try {
+      const saved = await api.saveRates({
+        baseRates: rows.map(({ year, month, day, adDate, rate }) => ({
+          year,
+          month,
+          day,
+          adDate,
+          rate,
+        })),
+      })
+      setRows(toRows(saved))
+      notify('Base rates updated on the website')
+    } catch (err) {
+      if (/log in/i.test(err.message)) return onAuthFail()
+      notify(err.message, 'error')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function reset() {
+    const ok = await confirm({
+      title: 'Restore the built-in rates?',
+      message:
+        'The table goes back to the original list of rates. Your current edits will be lost.',
+      confirmLabel: 'Restore',
+    })
+    if (!ok) return
+    try {
+      const restored = await api.resetRates()
+      setRows(toRows(restored))
+      notify('Built-in rates restored')
+    } catch (err) {
+      if (/log in/i.test(err.message)) return onAuthFail()
+      notify(err.message, 'error')
+    }
+  }
+
+  return (
+    <form onSubmit={save} className="max-w-4xl space-y-4">
+      {confirmDialog}
+
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <h2 className="font-display text-lg font-extrabold text-navy-900">
+            Monthly base rate ({rows.length} {rows.length === 1 ? 'rate' : 'rates'})
+          </h2>
+          {!loaded && <Loader2 className="h-4 w-4 animate-spin text-navy-900/30" />}
+        </div>
+        <button
+          type="button"
+          onClick={addRow}
+          className="inline-flex items-center gap-2 rounded-full border border-navy-900/15 px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:border-brand-500 hover:text-brand-600"
+        >
+          <Plus className="h-4 w-4" /> Add rate
+        </button>
+      </div>
+      <p className="text-sm text-navy-900/55">
+        Enter the date each rate takes effect in the Nepali (BS) calendar. The AD date
+        is optional and prints beneath it. The website lists rates newest first,
+        whatever order you enter them in.
+      </p>
+
+      <div className="overflow-hidden rounded-2xl border border-black/5 bg-white">
+        <div
+          className={`hidden gap-3 border-b border-navy-900/10 px-4 py-3 sm:grid ${rateGrid}`}
+        >
+          <span className={labelCls}>Year (BS)</span>
+          <span className={labelCls}>Month</span>
+          <span className={labelCls}>Day</span>
+          <span className={labelCls}>Same date (AD)</span>
+          <span className={labelCls}>Base rate (%)</span>
+          <span />
+        </div>
+
+        {rows.map((row, i) => (
+          <div
+            key={i}
+            className={`grid grid-cols-2 gap-3 px-4 py-3 sm:items-center ${rateGrid} ${
+              i > 0 ? 'border-t border-navy-900/10' : ''
+            }`}
+          >
+            <input
+              type="number"
+              min="2000"
+              max="2200"
+              step="1"
+              value={row.year}
+              onChange={(e) => setRow(i, 'year', e.target.value)}
+              className={inputCls}
+              placeholder="2083"
+              aria-label={`Row ${i + 1} year (BS)`}
+            />
+            <select
+              value={row.month}
+              onChange={(e) => setRow(i, 'month', e.target.value)}
+              className={inputCls}
+              aria-label={`Row ${i + 1} month`}
+            >
+              {BS_MONTHS.map((m) => (
+                <option key={m} value={m}>
+                  {m}
+                </option>
+              ))}
+            </select>
+            <input
+              type="number"
+              min="1"
+              max="32"
+              step="1"
+              value={row.day}
+              onChange={(e) => setRow(i, 'day', e.target.value)}
+              className={inputCls}
+              placeholder="22"
+              aria-label={`Row ${i + 1} day`}
+            />
+            <input
+              type="date"
+              value={row.adDate}
+              onChange={(e) => setRow(i, 'adDate', e.target.value)}
+              className={inputCls}
+              aria-label={`Row ${i + 1} same date (AD)`}
+            />
+            <input
+              type="number"
+              min="0"
+              max="100"
+              step="0.01"
+              value={row.rate}
+              onChange={(e) => setRow(i, 'rate', e.target.value)}
+              className={inputCls}
+              placeholder="11.00"
+              aria-label={`Row ${i + 1} base rate`}
+            />
+            <button
+              type="button"
+              onClick={() => removeRow(i)}
+              className="justify-self-end rounded-full p-2 text-navy-900/40 transition-colors hover:bg-red-50 hover:text-red-600"
+              title="Remove rate"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+        ))}
+
+        {rows.length === 0 && (
+          <p className="px-6 py-10 text-center text-sm text-navy-900/50">
+            The table is empty. Add a rate before saving.
+          </p>
+        )}
+      </div>
+
+      <Notice msg={msg} />
+
+      <div className="flex flex-wrap items-center gap-3">
+        <Button type="submit" busy={busy}>
+          <UploadCloud className="h-4 w-4" /> Save &amp; publish
+        </Button>
+        <button
+          type="button"
+          onClick={reset}
+          className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-navy-900/60 transition-colors hover:bg-navy-900/5 hover:text-navy-900"
+        >
+          <RotateCcw className="h-4 w-4" /> Restore original
+        </button>
+      </div>
+    </form>
+  )
+}
+
 /* ── Shell ─────────────────────────────────────────────────────── */
 
 const NAV = [
@@ -1686,6 +1941,7 @@ const NAV = [
   { id: 'team', label: 'Team', icon: Users, blurb: 'Board & management roster' },
   { id: 'careers', label: 'Careers', icon: Briefcase, blurb: 'Post & manage job openings' },
   { id: 'notice', label: 'Notice', icon: Megaphone, blurb: 'Popup notice shown to visitors' },
+  { id: 'rates', label: 'Rates', icon: Percent, blurb: 'Monthly base rate table' },
 ]
 
 export default function Admin() {
@@ -1792,6 +2048,7 @@ export default function Admin() {
           {tab === 'team' && <TeamPanel onAuthFail={clearAuth} />}
           {tab === 'careers' && <CareersPanel onAuthFail={clearAuth} />}
           {tab === 'notice' && <NoticePanel onAuthFail={clearAuth} />}
+          {tab === 'rates' && <RatesPanel onAuthFail={clearAuth} />}
         </main>
       </div>
 

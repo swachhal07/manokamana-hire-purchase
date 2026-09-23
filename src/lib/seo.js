@@ -45,6 +45,13 @@ export const ROUTES = {
     priority: 0.9,
     changefreq: 'monthly',
   },
+  '/interest-rates': {
+    title: 'Interest Rates | Manokamana Hire Purchase',
+    description:
+      'Monthly base rate published by Manokamana Hire Purchase, listed by Nepali (BS) year and month, newest first.',
+    priority: 0.9,
+    changefreq: 'monthly',
+  },
   '/about': {
     title: 'About Manokamana Hire Purchase | NRB-Licensed Lender',
     description:
