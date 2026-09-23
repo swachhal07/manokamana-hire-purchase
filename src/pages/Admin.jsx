@@ -1821,7 +1821,7 @@ function RatesPanel({ onAuthFail }) {
         </button>
       </div>
       <p className="text-sm text-navy-900/55">
-        Enter the date each rate takes effect in the Nepali (BS) calendar. The AD date
+        Enter the date each rate was published in the Nepali (BS) calendar. The AD date
         is optional and prints beneath it. The website lists rates newest first,
         whatever order you enter them in.
       </p>

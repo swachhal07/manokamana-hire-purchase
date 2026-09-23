@@ -27,7 +27,7 @@ export const BS_MONTHS = [
 ]
 
 /**
- * One row per published rate: the BS date it takes effect (year, month name,
+ * One row per published rate: the BS date it was published (year, month name,
  * day), the same date in AD ('YYYY-MM-DD', optional) and the rate in percent.
  */
 export const baseRates = [

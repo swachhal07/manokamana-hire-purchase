@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { ArrowUpRight, Calculator } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import Eyebrow from '../components/Eyebrow'
 import Seo from '../components/Seo'
 import {
@@ -8,6 +10,19 @@ import {
   formatRate,
   getRates,
 } from '../lib/rateStore'
+
+/**
+ * Fixed page copy — deliberately not admin-editable: it explains how the
+ * figures are read rather than stating any figure. Edit it here.
+ */
+const FOOT_NOTES = [
+  'Rates per annum',
+  'Reducing balance',
+  'Charges exclusive of government taxes',
+]
+
+const FINE_PRINT =
+  'Your sanctioned rate is fixed in the loan agreement after appraisal and stays with that agreement for its tenure.'
 
 /* ── Page ──────────────────────────────────────────────────────── */
 
@@ -48,7 +63,7 @@ export default function InterestRates() {
               className="animate-fade-up mx-auto mt-6 max-w-md text-lg leading-relaxed text-navy-900/60"
               style={{ animationDelay: '140ms' }}
             >
-              The base rate we publish each month, with the date it takes effect.
+              Our monthly base rate, listed by the date it was published.
               The newest rate is at the top.
             </p>
           </div>
@@ -63,7 +78,7 @@ export default function InterestRates() {
                 whatever the dates say. */}
             <table className="w-full table-fixed border-collapse text-left">
               <caption className="sr-only">
-                Base rate by effective date, newest first
+                Base rate by published date, newest first
               </caption>
 
               <thead>
@@ -78,13 +93,13 @@ export default function InterestRates() {
                     scope="col"
                     className="px-5 py-5 font-display text-base font-semibold sm:px-8 sm:text-lg"
                   >
-                    Effective date<span className="hidden sm:inline"> (BS)</span>
+                    Published date<span className="hidden sm:inline"> (BS)</span>
                   </th>
                   <th
                     scope="col"
                     className="hidden px-8 py-5 text-center font-display text-lg font-semibold md:table-cell"
                   >
-                    Effective date (AD)
+                    Published date (AD)
                   </th>
                   <th
                     scope="col"
@@ -147,6 +162,51 @@ export default function InterestRates() {
                 })}
               </tbody>
             </table>
+          </div>
+
+          {/* How to read the figures above */}
+          <p className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center font-mono text-[10px] uppercase tracking-[0.18em] text-navy-900/40">
+            {FOOT_NOTES.map((note, i) => (
+              <span key={note} className="flex items-center gap-x-3">
+                {i > 0 && (
+                  <span aria-hidden="true" className="text-brand-500">
+                    •
+                  </span>
+                )}
+                {note}
+              </span>
+            ))}
+          </p>
+
+          {/* ── Fine print & where to go next ── */}
+          <div className="mt-8 flex flex-col gap-6 border-t-2 border-navy-900 pt-6 sm:flex-row sm:items-start sm:justify-between">
+            <p className="max-w-md text-sm leading-relaxed text-navy-900/55">
+              {FINE_PRINT}
+            </p>
+
+            <div className="flex shrink-0 flex-col items-start gap-3 sm:items-end">
+              <Link
+                to="/emi-calculator"
+                className="group inline-flex items-center gap-2 text-sm font-semibold text-navy-900 transition-colors hover:text-brand-500"
+              >
+                <Calculator className="h-4 w-4" strokeWidth={2.2} />
+                Work out your instalment
+                <ArrowUpRight
+                  className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5"
+                  strokeWidth={2.5}
+                />
+              </Link>
+              <Link
+                to="/contact"
+                className="group inline-flex items-center gap-2 text-sm font-semibold text-navy-900 transition-colors hover:text-brand-500"
+              >
+                Ask an advisor about your rate
+                <ArrowUpRight
+                  className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5"
+                  strokeWidth={2.5}
+                />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
